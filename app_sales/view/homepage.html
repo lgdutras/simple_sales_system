@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html5>
+
+<head>
+    <title>Página Inicial</title>
+</head>
+<body>
+    <h1>Bem-vindo, {{ session['username'] }}</h1>
+    
+    <!-- Adicione um botão de logout que leva à rota de logout -->
+    <form action="{{ url_for('logout') }}" method="GET">
+        <button type="submit">Logout</button>
+    </form>
+</body>
+</html5>
