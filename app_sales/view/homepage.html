@@ -1,15 +1,24 @@
 <!DOCTYPE html>
-<html5>
+<html>
 
 <head>
-    <title>Página Inicial</title>
+    <title>SSS Homepage</title>
 </head>
+
 <body>
-    <h1>Bem-vindo, {{ session['username'] }}</h1>
+    <h1>Welcome, {{ session['username'] }}</h1>
     
-    <!-- Adicione um botão de logout que leva à rota de logout -->
+    <!-- Navigation Menu -->
+    <ul>
+        <li><a href="{{ url_for('register_sale') }}">Sell</a></li>
+        <li><a href="{{ url_for('view_sales') }}">Sales Dashboard</a></li>
+        <li><a href="{{ url_for('register_product') }}">Register Product</a></li>
+        <li><a href="{{ url_for('register_costumer') }}">Register Costumer</a></li>
+    </ul>
+
     <form action="{{ url_for('logout') }}" method="GET">
         <button type="submit">Logout</button>
     </form>
 </body>
-</html5>
+
+</html>

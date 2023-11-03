@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register Sale</title>
+</head>
+<body>
+    <h1>Register Sale</h1>
+
+    <form id="saleForm">
+        <!-- Fixed fields: User Registry and Item -->
+        <label for="userRegistry">User Registry:</label>
+        <input type="text" name="userRegistry" id="userRegistry" required><br><br>
+
+        <label for="item">Item:</label>
+        <input type="text" name="item" id="item" required><br><br>
+        <!-- Dynamic fields for additional items -->
+        <div id="dynamicFields">
+            <!-- JavaScript will add fields here -->
+        </div>
+
+        <button type="button" onclick="addNewItemField()">Add Item</button><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        let itemCounter = 1;
+
+        function addNewItemField() {
+            const dynamicFields = document.getElementById("dynamicFields");
+            const newItemField = document.createElement("div");
+
+            newItemField.innerHTML = `
+                <label for="item${itemCounter}">Item ${itemCounter}:</label>
+                <input type="text" name="item${itemCounter}" id="item${itemCounter}" required><br><br>
+            `;
+
+            dynamicFields.appendChild(newItemField);
+            itemCounter++;
+        }
+    </script>
+</body>
+</html>
