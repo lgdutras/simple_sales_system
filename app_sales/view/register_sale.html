@@ -7,26 +7,27 @@
 <body>
     <h1>Register Sale</h1>
 
-    <form id="saleForm" class="container">
+    <form id="saleForm" class="container" method="post">
         <!-- Fixed fields: User Registry and Item -->
         <div id="form-header" class="container form-check-inline">
+            <input hidden name="itemCounter" id="itemCounter" value="1">
             <label for="userRegistry">User Registry:</label>
             <input type="text" name="userRegistry" id="userRegistry" class= "form-control" required><br><br>
 
             <label for="userRegistry">Employee:</label>
-            <input type="text" name="employee" id="employee" class= "form-control" disabled required><br><br>
+            <input type="text" name="employee" id="employee" class= "form-control" required><br><br>
         </div>
 
         <div id="dynamicFields" class="form-inline">
             <div id="item" class="form-group d-inline-flex">
                 <label for="item"display: block>Item:</label>
-                <input type="text" name="item" id="item" class="form-control" required><br><br>
+                <input type="text" name="item1" id="item1" class="form-control" required><br><br>
 
                 <label for="item" display: block>Quantity:</label>
-                <input type="number" name="quantity" id="quantity" class="form-control" required><br><br>
+                <input type="number" name="quantity1" id="quantity1" class="form-control" required><br><br>
             
                 <label for="item"display: block>Price:</label>
-                <input type="number" name="price" id="price" class="form-control" required><br><br>
+                <input type="number" name="price1" id="price1" class="form-control" required><br><br>
             </div>
         <!-- Dynamic fields for additional items -->
             <!-- JavaScript will add fields here -->
@@ -34,7 +35,7 @@
         <div class="container form-inline padding">
             <button type="button" class="btn btn-primary" onclick="addNewItemField()">Add Item</button><br><br>
             <button type="button" class="btn btn-danger" onclick="removeLastItemField()">Remove Item</button><br><br>
-            <input type="submit" value="Submit" class="btn btn-success">
+            <input type="submit" value="Submit" class="btn btn-success" action="{{ url_for('register_sale') }}">
         </div>
     </form>
 
@@ -45,9 +46,8 @@
         function addNewItemField() { // Add Items
             const dynamicFields = document.getElementById("dynamicFields");
             const newItemField = document.createElement("div");
-
             newItemField.innerHTML = `
-            <div id="item" class="form-group">
+            <div id="item${itemCounter}" class="form-group">
                 <label for="item${itemCounter}">Item:</label>
                 <input type="text" name="item${itemCounter}" id="item${itemCounter}" class="form-control" required><br><br>
 
@@ -58,7 +58,7 @@
                 <input type="number" name="price${itemCounter}" id="price${itemCounter}" class="form-control" required><br><br>
             </div>
             `;
-
+            document.getElementById("itemCounter").value = itemCounter;
             dynamicFields.appendChild(newItemField);
             itemCounter++;
         }
@@ -69,6 +69,7 @@
 
             if (lastItemField) {
                 dynamicFields.removeChild(lastItemField);
+                document.getElementById("itemCounter").value = itemCounter-2;
                 itemCounter--;
             }
         }
