@@ -2,42 +2,79 @@
 <html>
 <head>
     <title>Register Sale</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
     <h1>Register Sale</h1>
 
-    <form id="saleForm">
+    <form id="saleForm" class="container">
         <!-- Fixed fields: User Registry and Item -->
-        <label for="userRegistry">User Registry:</label>
-        <input type="text" name="userRegistry" id="userRegistry" required><br><br>
+        <div id="form-header" class="container form-check-inline">
+            <label for="userRegistry">User Registry:</label>
+            <input type="text" name="userRegistry" id="userRegistry" class= "form-control" required><br><br>
 
-        <label for="item">Item:</label>
-        <input type="text" name="item" id="item" required><br><br>
-        <!-- Dynamic fields for additional items -->
-        <div id="dynamicFields">
-            <!-- JavaScript will add fields here -->
+            <label for="userRegistry">Employee:</label>
+            <input type="text" name="employee" id="employee" class= "form-control" disabled required><br><br>
         </div>
 
-        <button type="button" onclick="addNewItemField()">Add Item</button><br><br>
+        <div id="dynamicFields" class="form-inline">
+            <div id="item" class="form-group d-inline-flex">
+                <label for="item"display: block>Item:</label>
+                <input type="text" name="item" id="item" class="form-control" required><br><br>
 
-        <input type="submit" value="Submit">
+                <label for="item" display: block>Quantity:</label>
+                <input type="number" name="quantity" id="quantity" class="form-control" required><br><br>
+            
+                <label for="item"display: block>Price:</label>
+                <input type="number" name="price" id="price" class="form-control" required><br><br>
+            </div>
+        <!-- Dynamic fields for additional items -->
+            <!-- JavaScript will add fields here -->
+        </div>
+        <div class="container form-inline padding">
+            <button type="button" class="btn btn-primary" onclick="addNewItemField()">Add Item</button><br><br>
+            <button type="button" class="btn btn-danger" onclick="removeLastItemField()">Remove Item</button><br><br>
+            <input type="submit" value="Submit" class="btn btn-success">
+        </div>
     </form>
 
     <script>
-        let itemCounter = 1;
+        
+        let itemCounter = 2; // for addNewItemFiled function
 
-        function addNewItemField() {
+        function addNewItemField() { // Add Items
             const dynamicFields = document.getElementById("dynamicFields");
             const newItemField = document.createElement("div");
 
             newItemField.innerHTML = `
-                <label for="item${itemCounter}">Item ${itemCounter}:</label>
-                <input type="text" name="item${itemCounter}" id="item${itemCounter}" required><br><br>
+            <div id="item" class="form-group">
+                <label for="item${itemCounter}">Item:</label>
+                <input type="text" name="item${itemCounter}" id="item${itemCounter}" class="form-control" required><br><br>
+
+                <label for="item">Quantity:</label>
+                <input type="number" name="quantity${itemCounter}" id="quantity${itemCounter}" class="form-control" required><br><br>
+                
+                <label for="item">Price:</label>
+                <input type="number" name="price${itemCounter}" id="price${itemCounter}" class="form-control" required><br><br>
+            </div>
             `;
 
             dynamicFields.appendChild(newItemField);
             itemCounter++;
         }
+
+        function removeLastItemField() {
+            const dynamicFields = document.getElementById("dynamicFields");
+            const lastItemField = dynamicFields.lastElementChild;
+
+            if (lastItemField) {
+                dynamicFields.removeChild(lastItemField);
+                itemCounter--;
+            }
+        }
     </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.9/dist/umd/popper.min.js" integrity="sha384-Xm2LfedunveZ9lM5f0M8iRQC7l6a5a62FdF4NDj2a9r56VQun/AK7M6FC0Az1Nz9" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
