@@ -1,13 +1,18 @@
-<html5>
-    <head>
-        <title>SSS Login</title>
-    </head>
-    <body>
-        <form method="POST">
-            login: <input name="username"><br>
-            senha: <input name="pw" type="password"><br>
-            <input name="login" type='submit' value='Entrar'>
-        </form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SSS Login</title>
+</head>
+<body>
+    <form method="POST">
+        <label for="username">Login:</label>
+        <input type="text" id="username" name="username" required>
 
-    </body>
-</html5>
+        <label for="pw">Senha:</label>
+        <input type="password" id="pw" name="pw" required>
+
+        <input type="submit" name="login" value="Entrar">
+    </form>
+</body>
+</html>

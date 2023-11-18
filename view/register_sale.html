@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Register Sale</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
+
 <body>
     <h1>Register Sale</h1>
 
@@ -12,24 +15,24 @@
         <div id="form-header" class="container form-check-inline">
             <input hidden name="itemCounter" id="itemCounter" value="1">
             <label for="userRegistry">User Registry:</label>
-            <input type="text" name="userRegistry" id="userRegistry" class= "form-control" required><br><br>
+            <input type="text" name="userRegistry" id="userRegistry" class="form-control" required><br><br>
 
             <label for="userRegistry">Employee:</label>
-            <input type="text" name="employee" id="employee" class= "form-control" required><br><br>
+            <input type="text" name="employee" id="employee" class="form-control" required><br><br>
         </div>
 
         <div id="dynamicFields" class="form-inline">
             <div id="item" class="form-group d-inline-flex">
-                <label for="item"display: block>Item:</label>
+                <label for="item" display: block>Item:</label>
                 <input type="text" name="item1" id="item1" class="form-control" required><br><br>
 
                 <label for="item" display: block>Quantity:</label>
                 <input type="number" name="quantity1" id="quantity1" class="form-control" required><br><br>
-            
-                <label for="item"display: block>Price:</label>
+
+                <label for="item" display: block>Price:</label>
                 <input type="number" name="price1" id="price1" class="form-control" required><br><br>
             </div>
-        <!-- Dynamic fields for additional items -->
+            <!-- Dynamic fields for additional items -->
             <!-- JavaScript will add fields here -->
         </div>
         <div class="container form-inline padding">
@@ -40,7 +43,7 @@
     </form>
 
     <script>
-        
+
         let itemCounter = 2; // for addNewItemFiled function
 
         function addNewItemField() { // Add Items
@@ -69,13 +72,20 @@
 
             if (lastItemField) {
                 dynamicFields.removeChild(lastItemField);
-                document.getElementById("itemCounter").value = itemCounter-2;
+                document.getElementById("itemCounter").value = itemCounter - 2;
                 itemCounter--;
             }
         }
     </script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.9/dist/umd/popper.min.js" integrity="sha384-Xm2LfedunveZ9lM5f0M8iRQC7l6a5a62FdF4NDj2a9r56VQun/AK7M6FC0Az1Nz9" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.9/dist/umd/popper.min.js"
+        integrity="sha384-Xm2LfedunveZ9lM5f0M8iRQC7l6a5a62FdF4NDj2a9r56VQun/AK7M6FC0Az1Nz9"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 </body>
+
 </html>

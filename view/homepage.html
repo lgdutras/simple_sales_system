@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
     <title>SSS Homepage</title>
 </head>
 
 <body>
     <h1>Welcome, {{ session['username'] }}</h1>
-    
+
     <!-- Navigation Menu -->
     <ul>
         <li><a href="{{ url_for('register_sale') }}">Sell</a></li>
         <li><a href="{{ url_for('view_sales') }}">Sales Dashboard</a></li>
         <li><a href="{{ url_for('register_product') }}">Register Product</a></li>
-        <li><a href="{{ url_for('register_costumer') }}">Register Costumer</a></li>
+        <li><a href="{{ url_for('register_customer') }}">Register Customer</a></li>
     </ul>
 
     <form action="{{ url_for('logout') }}" method="GET">
