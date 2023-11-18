@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from secrets import token_hex
 
-app = Flask(__name__, template_folder=r"C:/GitHub/simple_sales_system/app_sales/view")
+app = Flask(__name__, template_folder=r"C:/dev/app_sales/view")
 app.secret_key = token_hex(64)
 
 
