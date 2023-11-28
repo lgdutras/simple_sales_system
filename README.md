@@ -5,7 +5,11 @@ Welcome to the Simple Sales System, an ongoing web application project designed 
 ## Technologies Used
 
 - **Python Version:** 3.10.7 (32-bit)
-  - **Framework:** Flask
+  - **Frameworks**
+    - Flask
+    - SQLAlchemy
+    - secrets
+    - bcrypt
 - **Database:** Oracle v7.0.0.1050
 - **Frontend Framework:** Bootstrap 4.0
 
