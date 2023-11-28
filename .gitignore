@@ -1,5 +1,5 @@
 # Ignore cache files
-__pycache__/
+/__pycache__/
 
 # Ignore database configuration file
-dbconfig.py
+model/database/dbconfig.py
