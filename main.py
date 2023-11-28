@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, session, B
 from secrets import token_hex
 from routes import BP_login, BP_logout, BP_home, BP_register_products, BP_register_sales, BP_register_users, BP_view_sales
 
-
 app = Flask(__name__, template_folder=r"C:/GitHub/simple_sales_system/app_sales/view")
 app.secret_key = token_hex(64)
 
