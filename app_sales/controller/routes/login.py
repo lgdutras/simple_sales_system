@@ -16,7 +16,7 @@ class user_data(db):
     password = Column(String)
     first_name = Column(String)
 
-Session = sessionmaker(bind=connection)
+Session = sessionmaker(create_engine('oracle+cx_oracle://username:password@host'))
 
 BP_login = Blueprint('login', __name__)
 
@@ -30,6 +30,8 @@ def login():
         sessiondb = Session()
         user_data_validation = sessiondb.query(user_data).filter_by(username=form_username).first()
         hashed_pw = str(user_data_validation.password).encode('utf-8')
+
+        print(hashed_pw)
 
         if form_username == user_data_validation.username and checkpw(form_password, hashed_pw) == True:
             session['logged_in'] = True
