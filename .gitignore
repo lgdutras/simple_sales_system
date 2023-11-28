@@ -1,0 +1,5 @@
+# Ignore cache files
+*.pyc
+
+# Ignore database configuration file
+dbconfig.py
