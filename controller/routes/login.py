@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column, Integer, String, Sequence, create_engine
 from sqlalchemy.ext.declarative import declarative_base
+from model.database.dbconfig import engine
 from bcrypt import checkpw
 
 # Database Connection to Login
@@ -16,8 +17,7 @@ class user_data(db):
     password = Column(String)
     first_name = Column(String)
 
-Session = sessionmaker(bind=connection)
-
+Session = sessionmaker(bind=engine)
 BP_login = Blueprint('login', __name__)
 
 BP_login.secret_key = token_hex(64)
