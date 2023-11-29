@@ -73,6 +73,24 @@
                 itemCounter--;
             }
         }
+
+        function sendUserRegistry() {
+
+            var user_registry_field = document.getElementById('userRegistry').value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/sales/register/getCostumer', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                // Handle the response from the server
+                var response = JSON.parse(xhr.responseText);
+                document.getElementById('result').innerHTML = response.message;
+        }
+    };
+
+    // Send the data to the server
+    xhr.send('data=' + inputData);
+        }
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.9/dist/umd/popper.min.js" integrity="sha384-Xm2LfedunveZ9lM5f0M8iRQC7l6a5a62FdF4NDj2a9r56VQun/AK7M6FC0Az1Nz9" crossorigin="anonymous"></script>
