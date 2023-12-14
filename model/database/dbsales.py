@@ -13,6 +13,7 @@ class Costumers(sss_database):
     username = Column(String)
     password = Column(String)
     first_name = Column(String)
+    last_name = Column(String)
 
 class Sales(sss_database):
     __tablename__ = 'vi_sales'

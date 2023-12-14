@@ -31,9 +31,19 @@ def register_sales():
 
 @BP_register_sales.route('/sales/register/getCostumer', methods=['Post'])
 def get_costumer():
-        costumer_registry = request.form['costumer_registry']
+        costumer_registry = request.form['userRegistry']
+        session_costumer = Session()
+        costumer_data = session_costumer.query(Costumers).filter_by(user_registry=costumer_registry).first()
+        costumer_name = costumer_data.first_name +' '+costumer_data.last_name
+        costumer_cpf = costumer_data.cpf
         #sql_query
-        return costumer_registry
+        return jsonify({'costumer_name': costumer_name})
+
+@BP_register_sales.route('/sales/register/setPrintt', methods=['Post'])
+def set_print():
+        sale_ToPrint = {'seller_registry': '5997'}
+        #sql_query
+        return jsonify(sale_ToPrint)
 
 BP_view_sales = Blueprint('view_sales', __name__)
 @BP_view_sales.route('/sales/view_sales')
