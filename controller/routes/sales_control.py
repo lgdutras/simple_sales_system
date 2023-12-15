@@ -18,7 +18,7 @@ def register_sales():
                 'price': request.form['price%s' % item]
             }
             items.append(item)
-        
+
         for item in items:
             session_sale = Session()
             new_item = Sales(seller_registry = session.get('user_registry'), seller_store = session.get('user_store'), costumer_registry = form_costumer_registry, costumer_store = form_costumer_name, item_id = item['item'], quantity = item['quantity'], unit_price = item['price'])
@@ -31,15 +31,15 @@ def register_sales():
 
 @BP_register_sales.route('/sales/register/getCostumer', methods=['Post'])
 def get_costumer():
-        costumer_registry = request.form['userRegistry']
+        costumer_registry = request.data.decode('utf-8')
         session_costumer = Session()
         costumer_data = session_costumer.query(Costumers).filter_by(user_registry=costumer_registry).first()
         costumer_name = costumer_data.first_name +' '+costumer_data.last_name
         costumer_cpf = costumer_data.cpf
         #sql_query
-        return jsonify({'costumer_name': costumer_name})
+        return jsonify({'costumer_name': costumer_name, 'costumer_cpf': costumer_cpf})
 
-@BP_register_sales.route('/sales/register/setPrintt', methods=['Post'])
+@BP_register_sales.route('/sales/register/setPrint', methods=['Post'])
 def set_print():
         sale_ToPrint = {'seller_registry': '5997'}
         #sql_query
