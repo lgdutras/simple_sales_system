@@ -12,8 +12,8 @@
         <div id="form-header" class="container form-check-inline">
             <input hidden name="itemCounter" id="itemCounter" value="1">
             <label for="userRegistry">User Registry:</label>
-            <input type="text" name="userRegistry" id="userRegistry" class= "form-control" onchange= "sendUserRegistry()" required>
-            <p id="costumer"> Nome do Colaborador </p>
+            <input type="text" name="userRegistry" id="userRegistry" class= "form-control" onchange= "getCostumer()" required>
+            <p id="costumer"> Costumer Name </p>
         </div>
 
         <div id="dynamicFields" class="form-inline">
@@ -73,7 +73,7 @@
             }
         }
 
-        function sendUserRegistry() {
+        function getCostumer() {
             var xhr = new XMLHttpRequest();
             var user_registry_field = document.getElementById('userRegistry').value;
 
