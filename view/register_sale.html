@@ -21,8 +21,10 @@
 
         <div id="items" class="form-inline">
             <div id="item1" class="form-group d-inline-flex row">
-                <label for="item"display: block>Item:</label>
-                <input type="text" name="item1" id="item1" class="form-control" required><br><br>
+                <label for="item"display: block>EAN:</label>
+                <input type="text" name="item1" id="barcode1" class="form-control" onchange= "getItem(1)" required><br><br>
+                
+                <p id="ItemDescription">Item Description</p>
 
                 <label for="item" display: block>Quantity:</label>
                 <input type="number" name="quantity1" id="quantity1" class="form-control" required><br><br>

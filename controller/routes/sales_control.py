@@ -1,5 +1,5 @@
 from flask import request, session, render_template, Blueprint, jsonify
-from model.database.dbsales import engine, Session, Costumers, Sales
+from model.database.dbsales import engine, Session, Costumers, Sales, Items
 
 BP_register_sales = Blueprint('register_sales', __name__)
 @BP_register_sales.route('/sales/register', methods = ['Post', 'Get'])
@@ -38,6 +38,17 @@ def get_costumer():
         costumer_cpf = costumer_data.cpf
         #sql_query
         return jsonify({'costumer_name': costumer_name, 'costumer_cpf': costumer_cpf})
+
+@BP_register_sales.route('/sales/register/getItem', method=['Post'])
+def get_item():
+     store = session['user_store']
+     barcode = request.data.decode('utf-8')
+     session_item = Session()
+     item_data = session_item.query(Items).filter_by(barcode=barcode, store=store)
+     item_description = item_data.column_descriptions
+     item_price_suggested = float(item_data.price, 4) / 2
+     
+     item_quantity_avaliable = item_data.stock
 
 @BP_register_sales.route('/sales/register/setPrint', methods=['Post'])
 def set_print():

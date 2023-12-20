@@ -26,5 +26,14 @@ class Sales(sss_database):
     quantity = Column(Integer)
     unit_price = Column(DECIMAL(5,2))
 
+class Items(sss_database):
+    __tablename__ = 'vi_items'
+    barcode = Column(String, primary_key=True)
+    store = Column(String)
+    price = Column(DECIMAL(4,2))
+    quantity = Column(Integer)
+
 engine = engine
 Session = sessionmaker(bind=engine)
+
+

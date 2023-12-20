@@ -47,3 +47,25 @@ function getCostumer() {
 }}    // Send the POST request with the userRegistryField as data
     xhr.send(user_registry_field);
 }
+
+function getItem(item) {
+
+    const itemDesc = document.getElementById("'ItemDescription'"+item)
+    const itemPrice = document.getElementById("price"+item)
+    const itemQuantity = document.getElementById("quantity"+item)
+
+    var xhr = new XMLHttpRequest();
+    var barcode = document.getElementById('barcode'+item).value;
+
+    xhr.open('POST', 'sales/register/getItem', true);
+    xhr.setRequestHeader('Content-Type', 'text/plain')
+
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            document.getElementById(itemDesc).innerHTML = response.itemDescription;
+            document.getElementById(itemPrice).placeholder = response.suggestedPrice;
+            document.getElementById(itemQuantity).placeholder = response.AvaliableQuantity; 
+        }
+    }
+}
