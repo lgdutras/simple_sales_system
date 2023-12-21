@@ -39,7 +39,7 @@ def get_costumer():
         #sql_query
         return jsonify({'costumer_name': costumer_name, 'costumer_cpf': costumer_cpf})
 
-@BP_register_sales.route('/sales/register/getItem', method=['Post'])
+@BP_register_sales.route('/sales/register/getItem', methods=['Post'])
 def get_item():
      store = session['user_store']
      barcode = request.data.decode('utf-8')

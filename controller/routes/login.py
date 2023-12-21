@@ -34,4 +34,4 @@ BP_logout = Blueprint('logout', __name__)
 def logout():
     session.pop('logged_in', None)
     session.clear()
-    return redirect(url_for('login'))
+    return redirect(url_for('login.login'))
