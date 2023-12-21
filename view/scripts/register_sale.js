@@ -5,8 +5,10 @@ function addItem() { // Add Items
     const dynamicFields = document.getElementById("items");
     const newItem = `
     <div id="item${itemCounter}" class="form-group d-inline-flex row">
-        <label for="item${itemCounter}">Item:</label>
-        <input type="text" name="item${itemCounter}" id="item${itemCounter}" class="form-control" required><br><br>
+        <label for="barcode${itemCounter}">EAN:</label>
+        <input type="text" name="barcode${itemCounter}" id="barcode${itemCounter}" class="form-control" onchange= "getItem('${itemCounter}')" required><br><br>
+
+        <p id="ItemDescription${itemCounter}">Item Description</p>
 
         <label for="item">Quantity:</label>
         <input type="number" name="quantity${itemCounter}" id="quantity${itemCounter}" class="form-control" required><br><br>
@@ -50,22 +52,25 @@ function getCostumer() {
 
 function getItem(item) {
 
-    const itemDesc = document.getElementById("'ItemDescription'"+item)
+    const itemDesc = document.getElementById("ItemDescription"+item)
     const itemPrice = document.getElementById("price"+item)
     const itemQuantity = document.getElementById("quantity"+item)
+
+    console.log(itemDesc)
 
     var xhr = new XMLHttpRequest();
     var barcode = document.getElementById('barcode'+item).value;
 
-    xhr.open('POST', 'sales/register/getItem', true);
+    xhr.open('POST', '/sales/register/getItem', true);
     xhr.setRequestHeader('Content-Type', 'text/plain')
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var response = JSON.parse(xhr.responseText);
-            document.getElementById(itemDesc).innerHTML = response.itemDescription;
-            document.getElementById(itemPrice).placeholder = response.suggestedPrice;
-            document.getElementById(itemQuantity).placeholder = response.AvaliableQuantity; 
+            itemDesc.innerHTML = response.itemDescription;
+            itemPrice.placeholder = response.suggestedPrice;
+            itemQuantity.placeholder = response.AvaliableQuantity; 
         }
     }
+    xhr.send(barcode)
 }

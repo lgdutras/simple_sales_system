@@ -1,19 +1,19 @@
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import Column, Integer, String, DECIMAL
+from sqlalchemy import Column, Integer, String, DECIMAL, Date
 from model.database.dbconfig import engine
 from sqlalchemy.ext.declarative import declarative_base
 
 sss_database = declarative_base()
 class Costumers(sss_database):
-    __tablename__ = 'vi_users'
-    user_id = Column(Integer, primary_key=True)
-    user_registry = Column(String)
-    user_store = Column(String)
+    __tablename__ = 'vi_costumers'
+    costumer_id = Column(Integer, primary_key=True)
+    costumer_registry = Column(String)
+    costumer_store = Column(String)
     cpf = Column(String(11))
-    username = Column(String)
-    password = Column(String)
     first_name = Column(String)
     last_name = Column(String)
+    admission_date = Column(Date)
+    active_status = Column(String(1))
 
 class Sales(sss_database):
     __tablename__ = 'vi_sales'
@@ -30,8 +30,9 @@ class Items(sss_database):
     __tablename__ = 'vi_items'
     barcode = Column(String, primary_key=True)
     store = Column(String)
+    description = Column(String)
+    quantity = Column(DECIMAL(4,2))
     price = Column(DECIMAL(4,2))
-    quantity = Column(Integer)
 
 engine = engine
 Session = sessionmaker(bind=engine)

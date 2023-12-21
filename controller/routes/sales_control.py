@@ -33,7 +33,7 @@ def register_sales():
 def get_costumer():
         costumer_registry = request.data.decode('utf-8')
         session_costumer = Session()
-        costumer_data = session_costumer.query(Costumers).filter_by(user_registry=costumer_registry).first()
+        costumer_data = session_costumer.query(Costumers).filter_by(costumer_registry=costumer_registry).first()
         costumer_name = costumer_data.first_name +' '+costumer_data.last_name
         costumer_cpf = costumer_data.cpf
         #sql_query
@@ -41,14 +41,17 @@ def get_costumer():
 
 @BP_register_sales.route('/sales/register/getItem', methods=['Post'])
 def get_item():
-     store = session['user_store']
+     sale_store = str(session['user_store'])
      barcode = request.data.decode('utf-8')
      session_item = Session()
-     item_data = session_item.query(Items).filter_by(barcode=barcode, store=store)
-     item_description = item_data.column_descriptions
-     item_price_suggested = float(item_data.price, 4) / 2
-     
-     item_quantity_avaliable = item_data.stock
+     item_data = session_item.query(Items).filter_by(barcode=barcode, store=sale_store).first()
+     item_description = item_data.description
+     item_price_suggested = float(item_data.price) / 2
+     item_quantity_avaliable = item_data.quantity
+
+     return jsonify({'itemDescription': item_description,
+                     'suggestedPrice': item_price_suggested,
+                     'AvaliableQuantity': item_quantity_avaliable})
 
 @BP_register_sales.route('/sales/register/setPrint', methods=['Post'])
 def set_print():
