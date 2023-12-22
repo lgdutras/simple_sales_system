@@ -2,8 +2,7 @@
 <html>
 <head>
     <title>Register Sale</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" >
-    <script type="text/javascript" src="{{ url_for('static', filename='register_sale.js') }}"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 
 </head>
 <body>
@@ -13,9 +12,9 @@
         <!-- Fixed fields: User Registry and Item -->
         <div id="form-header" class="container form-check-inline">
             <input hidden name="itemCounter" id="itemCounter" value="1">
-            <label for="userRegistry">User Registry:</label>
-            <input type="text" name="userRegistry" id="userRegistry" class= "form-control" onchange= "getCostumer()" required>
-            <p id="costumer"> Costumer Name </p></br>
+            <label for="costumerRegistry">User Registry:</label>
+            <input type="text" name="costumerRegistry" id="costumerRegistry" class= "form-control" onchange= "getCostumer()" required>
+            <p id="costumerName"> Costumer Name </p></br>
             <button type="button" class="btn btn-primary" onclick="addItem()">Add Item</button><br><br>
         </div>
 
@@ -24,7 +23,7 @@
                 <label for="barcode1"display: block>EAN:</label>
                 <input type="text" name="barcode1" id="barcode1" class="form-control" onchange= "getItem('1')" required><br><br>
                 
-                <p id="ItemDescription1">Item Description</p>
+                <p id="itemDescription1">Item Description</p>
 
                 <label for="item" display: block>Quantity:</label>
                 <input type="number" name="quantity1" id="quantity1" class="form-control" required><br><br>
@@ -40,9 +39,10 @@
             -->
         </div>
         <div class="container form-inline padding">
-            <input type="submit" value="Submit" class="btn btn-success" action="{{ url_for('register_sales.register_sales') }}">
+            <input type="button"  value="Submit" class="btn btn-success" onclick="registerSale()">
         </div>
     </form>
+    <script type="text/javascript" src="{{ url_for('static', filename='register_sale.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>

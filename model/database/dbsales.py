@@ -1,5 +1,5 @@
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import Column, Integer, String, DECIMAL, Date
+from sqlalchemy import Column, Integer, String, DECIMAL, Date, DateTime
 from model.database.dbconfig import engine
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -18,11 +18,11 @@ class Costumers(sss_database):
 class Sales(sss_database):
     __tablename__ = 'vi_sales'
     sale_id = Column(Integer, primary_key=True)
-    seller_registry = Column(Integer)
+    seller_registry = Column(Integer, primary_key=True)
     seller_store = Column(Integer)
-    costumer_registry = Column(Integer)
+    costumer_registry = Column(Integer, primary_key=True)
     costumer_store = Column(Integer)
-    item_id = Column(Integer)
+    item_id = Column(Integer, primary_key=True)
     quantity = Column(Integer)
     unit_price = Column(DECIMAL(5,2))
 
