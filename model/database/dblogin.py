@@ -13,6 +13,7 @@ class getUser(sss_database):
     username = Column(String)
     password = Column(String)
     first_name = Column(String)
+    last_name = Column(String)
 
 engine = engine
 Session = sessionmaker(bind=engine)

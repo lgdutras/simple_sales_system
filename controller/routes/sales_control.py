@@ -78,8 +78,12 @@ def registerSale():
         session_sale.commit()
         session_sale.close()
 
+    session_sale = Session()
+
+    sale_datetime = session_sale.query(Sales).filter_by(sale_id=newSaleID, seller_registry=int(session.get('user_registry'))).first().datetime
+    seller_name = session.get('firstname') + ' ' + session.get('lastname')
     sale_status = 'This sale was registered sucessfully!'
-    return jsonify({'status': sale_status, 'sale_id': newSaleID})
+    return jsonify({'status': sale_status, 'sale_id': newSaleID, 'seller_name': seller_name, 'sale_store': session.get('user_store'), 'datetime': sale_datetime})
 
 BP_view_sales = Blueprint('view_sales', __name__)
 @BP_view_sales.route('/sales/view_sales')

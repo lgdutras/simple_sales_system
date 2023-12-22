@@ -19,6 +19,7 @@ def login():
             session['logged_in'] = True
             session['username'] = form_username
             session['firstname'] = user_data_validation.first_name
+            session['lastname'] = user_data_validation.last_name
             session['user_registry'] = user_data_validation.user_registry
             session['user_store'] = user_data_validation.user_store
             session_login.close

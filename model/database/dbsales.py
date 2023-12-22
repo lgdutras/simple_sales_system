@@ -18,6 +18,7 @@ class Costumers(sss_database):
 class Sales(sss_database):
     __tablename__ = 'vi_sales'
     sale_id = Column(Integer, primary_key=True)
+    datetime = Column(DateTime, primary_key=True, nullable=True)
     seller_registry = Column(Integer, primary_key=True)
     seller_store = Column(Integer)
     costumer_registry = Column(Integer, primary_key=True)
@@ -36,5 +37,3 @@ class Items(sss_database):
 
 engine = engine
 Session = sessionmaker(bind=engine)
-
-
