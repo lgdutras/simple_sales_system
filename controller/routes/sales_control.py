@@ -1,11 +1,10 @@
-from flask import request, session, render_template, Blueprint, jsonify
+from flask import request, session, render_template, Blueprint, jsonify, url_for, redirect
 from model.database.dbsales import engine, Session, Costumers, Sales, Items
 import json
 
 BP_register_sales = Blueprint('register_sales', __name__)
 @BP_register_sales.route('/sales/register', methods = ['Post', 'Get'])
 def register_sales():
-
     return render_template('register_sale.html')
 
 @BP_register_sales.route('/sales/register/getCostumer', methods=['Post'])
@@ -32,19 +31,25 @@ def get_item():
                      'suggestedPrice': item_price_suggested,
                      'AvaliableQuantity': item_quantity_avaliable})
 
-@BP_register_sales.route('/sales/register/setPrint', methods=['Post'])
+@BP_register_sales.route('/sales/register/setPrint', methods=['Post', 'Get'])
 def set_print():
         
         # Requesting sale data to assembly 
-        sale_ToPrint = request.get_json()
-        print(sale_ToPrint)
+        sale_data = request.get_json()
+        header_data = json.loads(sale_data['header'])
+        # Set Header to input on database
+        costumerRegistry = header_data['costumerRegistry']
+        costumerStore = header_data['costumerStore']
+        # Get items to input on database
+        items_data = json.loads(sale_data['items'])
+        print(header_data)
+        print(items_data)
 
         # Getting from database the last sale ID to incremment then define next
         session_SaleID = Session()
-        lastSale = session_SaleID.query(Sales).order_by(Sales.sale_id.desc()).first()
+        lastSale = session_SaleID.query(Sales).order_by(Sales.sale_id.desc()).first().sale_id
         newSaleID = int(lastSale) + 1 
-
-        return jsonify(sale_ToPrint)
+        return jsonify(sale_data)
 
 @BP_register_sales.route('/sales/register/registerSale', methods=['Post'])
 def registerSale():
@@ -83,15 +88,13 @@ def registerSale():
     sale_datetime = session_sale.query(Sales).filter_by(sale_id=newSaleID, seller_registry=int(session.get('user_registry'))).first().datetime
     seller_name = session.get('firstname') + ' ' + session.get('lastname')
     sale_status = 'This sale was registered sucessfully!'
-    return jsonify({'status': sale_status, 'sale_id': newSaleID, 'seller_name': seller_name, 'sale_store': session.get('user_store'), 'datetime': sale_datetime})
+    return jsonify({'status': sale_status,
+                    'sale_id': newSaleID,
+                    'seller_name': seller_name,
+                    'sale_store': session.get('user_store'),
+                    'datetime': sale_datetime})
 
 BP_view_sales = Blueprint('view_sales', __name__)
 @BP_view_sales.route('/sales/view_sales')
-def view_sales():
-    return render_template('view_sales.html')
-
-
-BP_cancel_sales = Blueprint('view_sales', __name__)
-@BP_cancel_sales.route('/sales/view_sales')
 def view_sales():
     return render_template('view_sales.html')

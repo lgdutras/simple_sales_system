@@ -119,13 +119,14 @@ function registerSale() {
 
     } // Sending the sale data to register on database and retrieving sale_id
         xhr = new XMLHttpRequest();
+
         xhr.open('POST', '/sales/register/registerSale', true);
         xhr.setRequestHeader('Content-Type', 'application/json')
 
-        xhr.onreadystatechange == function () {
+        xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var response = JSON.parse(xhr.responseText);
-            console.log(response)
+            console.log('Data sended to register')
             }
 
         }
@@ -136,5 +137,31 @@ function registerSale() {
                 'header': header_json,
                 'items': items_json
         })
-        xhr.send(sale_data)
+        xhr.send(sale_data);
     };
+
+function setPrint() {
+    xhrPrint = new XMLHttpRequest();
+
+    xhrPrint.open('POST', '/sales/register/setPrint', true);
+    xhrPrint.setRequestHeader('Content-Type', 'application/json')
+
+    
+
+    xhrPrint.onreadystatechange = function () {
+        if (xhrPrint.readyState === 4 && xhrPrint.status === 200) {
+            var PDFData = document.getElementById("PDF").innerHTML
+            console.log('Data sended to print')
+            var response = JSON.parse(xhrPrint.responseText);
+            console.log(response)
+            var ContentPDF = "<p id='costumerNamePDF'>'Venda para:' $response.costumerName </p>"
+            PDFData = ContentPDF;
+        }
+    }
+    xhrPrint.send(sale_data);
+};
+
+function callRegister() {
+    registerSale();
+    setPrint();
+}

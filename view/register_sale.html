@@ -31,7 +31,7 @@
                 <label for="item"display: block>Price:</label>
                 <input type="number" name="price1" id="price1" class="form-control" required><br><br>
                 
-                <button type="button" class="btn btn-danger" onclick="removeItem(1)" > X </button>
+                <button type="Submit" class="btn btn-danger" onclick="removeItem(1)" > X </button>
             </div>
         <!-- Dynamic fields for additional items -->
             <!-- JavaScript will add fields here 
@@ -39,9 +39,15 @@
             -->
         </div>
         <div class="container form-inline padding">
-            <input type="button"  value="Submit" class="btn btn-success" onclick="registerSale()">
+            <input type="button"  value="Submit" class="btn btn-success" onclick="callRegister()">
         </div>
     </form>
+
+    <p id="PDF">
+
+    </p>
+
+
     <script type="text/javascript" src="{{ url_for('static', filename='register_sale.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
