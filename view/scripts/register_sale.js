@@ -142,20 +142,31 @@ function registerSale() {
 
 function setPrint() {
     xhrPrint = new XMLHttpRequest();
-
+    pdfContainer = document.getElementById("PDF")
     xhrPrint.open('POST', '/sales/register/setPrint', true);
     xhrPrint.setRequestHeader('Content-Type', 'application/json')
-
-    
-
+    console.log('Data sended to print')
     xhrPrint.onreadystatechange = function () {
         if (xhrPrint.readyState === 4 && xhrPrint.status === 200) {
-            var PDFData = document.getElementById("PDF").innerHTML
-            console.log('Data sended to print')
             var response = JSON.parse(xhrPrint.responseText);
+            salesPDF = `
+                <p>
+                    Chapa: ${response.costumerRegistry}
+                    Nome: ${response.costumerName}
+                    CPF: ${response.costumerCPF}
+                    Data: ${response.date}
+                </p>    
+                `
+            response = JSON.parse(response)
+            response_header = JSON.parse(response.header)
+            response_items = JSON.parse(response.items)
             console.log(response)
-            var ContentPDF = "<p id='costumerNamePDF'>'Venda para:' $response.costumerName </p>"
-            PDFData = ContentPDF;
+            console.log("-------")
+            console.log(response_header)
+            console.log("-------")
+            console.log(response_items)
+            console.log("-------")
+            pdfContainer.innerHTML = salesPDF
         }
     }
     xhrPrint.send(sale_data);

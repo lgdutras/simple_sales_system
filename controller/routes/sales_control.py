@@ -37,6 +37,7 @@ def set_print():
         # Requesting sale data to assembly 
         sale_data = request.get_json()
         header_data = json.loads(sale_data['header'])
+        print(sale_data)
         # Set Header to input on database
         costumerRegistry = header_data['costumerRegistry']
         costumerStore = header_data['costumerStore']
@@ -48,13 +49,15 @@ def set_print():
         # Getting from database the last sale ID to incremment then define next
         session_SaleID = Session()
         lastSale = session_SaleID.query(Sales).order_by(Sales.sale_id.desc()).first().sale_id
-        newSaleID = int(lastSale) + 1 
+        newSaleID = int(lastSale) + 1
+        sale_data = json.dumps(sale_data)
         return jsonify(sale_data)
 
 @BP_register_sales.route('/sales/register/registerSale', methods=['Post'])
 def registerSale():
     # Get full sale data
     sale_data = request.get_json()
+    print(sale_data)
     header_data = json.loads(sale_data['header'])
     # Set Header to input on database
     costumerRegistry = header_data['costumerRegistry']

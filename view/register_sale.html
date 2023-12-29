@@ -6,7 +6,7 @@
 
 </head>
 <body>
-    <h1>Register Sale</h1>
+    <h1 id="TitleHead">Register Sale</h1>
 
     <form id="saleForm" class="container" method="post">
         <!-- Fixed fields: User Registry and Item -->
@@ -25,10 +25,10 @@
                 
                 <p id="itemDescription1">Item Description</p>
 
-                <label for="item" display: block>Quantity:</label>
+                <label for="quantity1" display: block>Quantity:</label>
                 <input type="number" name="quantity1" id="quantity1" class="form-control" required><br><br>
             
-                <label for="item"display: block>Price:</label>
+                <label for="price1"display: block>Price:</label>
                 <input type="number" name="price1" id="price1" class="form-control" required><br><br>
                 
                 <button type="Submit" class="btn btn-danger" onclick="removeItem(1)" > X </button>
@@ -43,9 +43,9 @@
         </div>
     </form>
 
-    <p id="PDF">
-
-    </p>
+    <div id="PDF" name="PDF">
+        <p>"Dados da venda: "{{sale_data}}</p>
+    </div>
 
 
     <script type="text/javascript" src="{{ url_for('static', filename='register_sale.js') }}"></script>
