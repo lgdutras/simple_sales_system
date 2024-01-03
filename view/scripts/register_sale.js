@@ -1,3 +1,4 @@
+
 let itemCounter = 2; // for addNewItemFiled function
 let costumer_cpf = ""; // Costumer identification data that will be saved on sale registry
 
@@ -91,7 +92,7 @@ function registerSale() {
     // Items data to input sale
     itemsDiv = document.getElementById('items')
 
-    let items_data = { // create a json to populate it with form data to send to backend
+    items_data = { // create a json to populate it with form data to send to backend
     }
 
     for (let itemNumber = 0; itemNumber < itemsDiv.children.length; itemNumber++) {
@@ -125,11 +126,46 @@ function registerSale() {
 
         xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            var response = JSON.parse(xhr.responseText);
+            response = JSON.parse(xhr.responseText);
             console.log('Data sended to register')
+            PDFContainer = document.getElementById("receipt");
+            PDFContainer.style.visibility = "visible";
+            // Sending header data to receipt the sale data to create a pdf
+            document.getElementById('RsaleStore').innerText = response.sale_store
+            document.getElementById('RsellerName').innerText = response.seller_name
+            document.getElementById('RsaleId').innerText = response.sale_id
+            document.getElementById('RsaleDate').innerText = response.datetime
+
+            document.getElementById('RcostumerRegistry').innerText = response.costumer_registry
+            console.log(document.getElementById('RcostumerName').innerText)
+            document.getElementById('RcostumerName').innerText = response.costumer_name
+            console.log(document.getElementById('RcostumerName').innerText)
+            document.getElementById('RcostumerCPF').innerText = response.costumer_cpf
+            document.getElementById('RcostumerStore').innerText = response.costumer_store
             }
 
         }
+
+// Sending items data to receipt the sale data to create a pdf
+        var saleTotal = 0
+    for (item in items_data) {
+        var barcode = items_data[item]['barcode']
+        var itemDescription = items_data[item]['itemDescription']
+        var quantity = items_data[item]['quantity']
+        var price = items_data[item]['price']
+        var itemTotal = price * quantity
+        var row = ` <tr id='row+${item}'>
+                        <td id='barcode+${item}'>${barcode}</td>
+                        <td id='name+${item}'>${itemDescription}</td>
+                        <td id='quantity+${item}'>${quantity}</td>
+                        <td id='price+${item}'>R$ ${price}</td>
+                        <td id='total+${item}'>R$ ${itemTotal}</td>
+                    </tr>`
+        tableToAppend = document.getElementById('itemsPDF')
+        tableToAppend.insertAdjacentHTML("beforeend", row);
+        var saleTotal = saleTotal + itemTotal
+    }
+    document.getElementById('totalValue').innerText = saleTotal
 
         header_json = JSON.stringify(header_data);
         items_json = JSON.stringify(items_data);
@@ -140,39 +176,55 @@ function registerSale() {
         xhr.send(sale_data);
     };
 
-function setPrint() {
-    xhrPrint = new XMLHttpRequest();
-    pdfContainer = document.getElementById("PDF")
-    xhrPrint.open('POST', '/sales/register/setPrint', true);
-    xhrPrint.setRequestHeader('Content-Type', 'application/json')
-    console.log('Data sended to print')
-    xhrPrint.onreadystatechange = function () {
-        if (xhrPrint.readyState === 4 && xhrPrint.status === 200) {
-            var response = JSON.parse(xhrPrint.responseText);
-            salesPDF = `
-                <p>
-                    Chapa: ${response.costumerRegistry}
-                    Nome: ${response.costumerName}
-                    CPF: ${response.costumerCPF}
-                    Data: ${response.date}
-                </p>    
-                `
-            response = JSON.parse(response)
-            response_header = JSON.parse(response.header)
-            response_items = JSON.parse(response.items)
-            console.log(response)
-            console.log("-------")
-            console.log(response_header)
-            console.log("-------")
-            console.log(response_items)
-            console.log("-------")
-            pdfContainer.innerHTML = salesPDF
-        }
-    }
-    xhrPrint.send(sale_data);
-};
 
-function callRegister() {
-    registerSale();
-    setPrint();
+// Hidden form and print window
+function printDiv() {
+
+    // Setting listener to show elements again and confirm sale with alert
+    window.addEventListener('afterprint', function() {
+        saleForm.style.display = ""
+        btnPrint.style.display = ""
+    })
+
+    // Hidden elements and print window
+    saleForm = document.getElementById('saleFormContent')
+    btnPrint = document.getElementById('printSale')
+    saleForm.style.display = "none"
+    btnPrint.style.display = "none"
+
+    // Creating a copy of receipt then printing
+    receiptContainer = document.getElementById('receiptContainer')
+    receiptContainer.insertAdjacentHTML("beforeend", document.getElementById('receiptContainer').innerHTML)
+    window.print()
+    receiptContainer = document.getElementById('receiptContainer')
+    receiptContainer.removeChild(receiptContainer.lastChild)
 }
+
+    // Trying to print converting on a pdf
+function printDiv0() {
+            // Create a new jsPDF instance
+            const pdf = new window.jspdf.jsPDF({
+                unit: 'mm',
+                format: 'a4',
+                autoPrint: true
+            });
+
+            // Get the content of the div you want to print
+            const contentToPrint = document.getElementById("receipt");
+            // Use html2canvas to convert the content to an image
+            html2canvas(contentToPrint).then(canvas => {
+                // Convert the canvas to a data URL
+                const imgData = canvas.toDataURL('image/png');
+
+                // Add the image to the PDF
+                pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
+
+                // Open the PDF in a new window
+                const pdfWindow = window.open('', '_blank');
+                pdfWindow.document.write('<html><head><title>Print</title></head><body>');
+                pdfWindow.document.write('<embed width="100%" height="100%" type="application/pdf" src="' + pdf.output('datauristring') + '" />');
+                pdfWindow.document.write('</body></html>');
+
+
+            })
+        };

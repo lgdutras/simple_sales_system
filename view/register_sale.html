@@ -3,9 +3,39 @@
 <head>
     <title>Register Sale</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-
+    <style>
+    .receipt_container {
+        margin-left: auto;
+        margin-right: auto;
+        width: 80%
+    }
+    .header_item {
+        display: inline-block;
+        width:24%;
+        text-align: center;
+        }
+    .header, .footer {
+        border-bottom: 1px solid #ccc;
+        padding: 10px 0;
+        text-align: center;
+        }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        }
+    th {
+        background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
+    <div id="saleFormContent" style="visibility: visible;">
     <h1 id="TitleHead">Register Sale</h1>
 
     <form id="saleForm" class="container" method="post">
@@ -39,17 +69,58 @@
             -->
         </div>
         <div class="container form-inline padding">
-            <input type="button"  value="Submit" class="btn btn-success" onclick="callRegister()">
+            <input type="button"  value="Submit" class="btn btn-success" onclick="registerSale()">
         </div>
     </form>
-
-    <div id="PDF" name="PDF">
-        <p>"Dados da venda: "{{sale_data}}</p>
     </div>
+    <div id="receiptContainer">
+        <div id="receipt" name="receipt" class="receipt_container" style="visibility: collapse;">
+            <input type="button" value="Print" class="btn" id="printSale" onclick="printDiv()" style='visibility: visible;'></button>
+            <div class="header">
+                <h2>Receipt</h2>
+                <div id="sale_info">
+                    <p class="header_item">Sale Store: <span id="RsaleStore"></span></p>
+                    <p class="header_item">Sale ID: <span id="RsaleId"></span></p>
+                    <p class="header_item">Seller Name: <span id="RsellerName"></span></p>
+                    <p class="header_item">Sale Date: <span id="RsaleDate"></span></p>
+                </div>
+                <div id="costumer_info">
+                    <p class="header_item">Costumer Registry: <span id="RcostumerRegistry"></span></p>
+                    <p class="header_item">Costumer Name: <span id="RcostumerName"></span></p>
+                    <p class="header_item">Costumer CPF: <span id="RcostumerCPF"></span></p>
+                    <p class="header_item">Costumer Store: <span id="RcostumerStore"></span></p>
+                </div>
+            </div>
 
+            <div class="body">
+                <table id="items_info">
+                    <thead>
+                        <tr>
+                            <th>Barcode</th>
+                            <th>Item Description</th>
+                            <th>Item Quantity</th>
+                            <th>Price</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemsPDF">
+                        <!-- Add dynamic rows for each item in the sale -->
+    
+                        <!-- Add more rows as needed -->
+                    </tbody>
+                </table>
+            </div>
 
-    <script type="text/javascript" src="{{ url_for('static', filename='register_sale.js') }}"></script>
+            <div id="footer" class="footer">
+                <p class="header_item">Customer Signature: ___________________________</p>
+                <p class="header_item">Total Value of Purchase: $<span id="totalValue">20.00</span></p>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='register_sale.js') }}"></script>
 </body>
 </html>
