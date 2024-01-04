@@ -5,7 +5,7 @@ from controller.routes import BP_login, BP_logout, BP_home, BP_register_products
 app = Flask(__name__, template_folder=r"view")
 app.secret_key = token_hex(64)
 
-app.static_folder = r"view/scripts"
+app.static_folder = r"view"
 #routes
 app.register_blueprint(BP_logout)
 app.register_blueprint(BP_login)

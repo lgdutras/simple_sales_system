@@ -8,4 +8,4 @@ def homepage():
         return render_template('homepage.html')
     else:
         print('Acesso Negado!')
-        return redirect(url_for('login'))
+        return redirect(url_for('login.login'))

@@ -3,36 +3,7 @@
 <head>
     <title>Register Sale</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <style>
-    .receipt_container {
-        margin-left: auto;
-        margin-right: auto;
-        width: 80%
-    }
-    .header_item {
-        display: inline-block;
-        width:24%;
-        text-align: center;
-        }
-    .header, .footer {
-        border-bottom: 1px solid #ccc;
-        padding: 10px 0;
-        text-align: center;
-        }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-        }
-    th {
-        background-color: #f2f2f2;
-        }
-    </style>
+    <link rel="stylesheet" href="{{url_for('static', filename='style/register_sale.css')}}">
 </head>
 <body>
     <div id="saleFormContent" style="visibility: visible;">
@@ -53,7 +24,7 @@
                 <label for="barcode1"display: block>EAN:</label>
                 <input type="text" name="barcode1" id="barcode1" class="form-control" onchange= "getItem('1')" required><br><br>
                 
-                <p id="itemDescription1">Item Description</p>
+                <p id="itemDescription1"></p>
 
                 <label for="quantity1" display: block>Quantity:</label>
                 <input type="number" name="quantity1" id="quantity1" class="form-control" required><br><br>
@@ -61,7 +32,7 @@
                 <label for="price1"display: block>Price:</label>
                 <input type="number" name="price1" id="price1" class="form-control" required><br><br>
                 
-                <button type="Submit" class="btn btn-danger" onclick="removeItem(1)" > X </button>
+                <button type="button" class="btn btn-danger" onclick="removeItem(1)" > X </button>
             </div>
         <!-- Dynamic fields for additional items -->
             <!-- JavaScript will add fields here 
@@ -69,13 +40,13 @@
             -->
         </div>
         <div class="container form-inline padding">
-            <input type="button"  value="Submit" class="btn btn-success" onclick="registerSale()">
+            <input type="button"  value="Submit" class="btn btn-success" onclick="validFields()">
+            <input type="button" value="Print" class="btn" id="printSale" onclick="printReceipt()" style='visibility: visible;'></button>
         </div>
     </form>
     </div>
     <div id="receiptContainer">
         <div id="receipt" name="receipt" class="receipt_container" style="visibility: collapse;">
-            <input type="button" value="Print" class="btn" id="printSale" onclick="printDiv()" style='visibility: visible;'></button>
             <div class="header">
                 <h2>Receipt</h2>
                 <div id="sale_info">
@@ -117,10 +88,11 @@
             </div>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='register_sale.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='scripts/register_sale.js') }}"></script>
 </body>
 </html>

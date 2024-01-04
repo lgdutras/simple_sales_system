@@ -9,7 +9,7 @@ function addItem() { // Add Items
         <label for="barcode${itemCounter}">EAN:</label>
         <input type="text" name="barcode${itemCounter}" id="barcode${itemCounter}" class="form-control" onchange= "getItem('${itemCounter}')" required><br><br>
 
-        <p id="itemDescription${itemCounter}">Item Description</p>
+        <p id="itemDescription${itemCounter}"></p>
 
         <label for="item">Quantity:</label>
         <input type="number" name="quantity${itemCounter}" id="quantity${itemCounter}" class="form-control" required><br><br>
@@ -43,13 +43,26 @@ function getCostumer() {
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
-        // Handle the response from the server
-        var response = JSON.parse(xhr.responseText);
-        costumer_cpf = response.costumer_cpf;
-        costumer_name = response.costumer_name;
-        costumer_store = response.costumer_store;
-        document.getElementById('costumerName').innerHTML = response.costumer_name;
-}}    // Send the POST request with the costumerRegistryField as data
+            // On sucessfull response
+
+            // Clear costumer name
+            document.getElementById('costumerName').innerHTML = ""
+
+            // Handle the response from the server
+            var response = JSON.parse(xhr.responseText);
+            costumer_cpf = response.costumer_cpf;
+            costumer_name = response.costumer_name;
+            costumer_store = response.costumer_store;
+            document.getElementById('costumerName').innerHTML = costumer_name;
+            
+                } else if (xhr.readyState === 4 && xhr.status === 404) {
+                    // 404 if costumer not found
+                    
+                    alert('Costumer not found. Please, type a valid costumer');
+                    document.getElementById('costumerName').innerHTML = '';
+
+                }
+            }    // Send the POST request with the costumerRegistryField as data
     xhr.send(user_registry_field);
 }
 
@@ -67,16 +80,81 @@ function getItem(item) {
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
+
             var response = JSON.parse(xhr.responseText);
             itemDesc.innerHTML = response.itemDescription;
             itemPrice.placeholder = response.suggestedPrice;
             itemQuantity.placeholder = response.AvaliableQuantity; 
+
+            } else if (xhr.readyState === 4 && xhr.status === 404) {
+
+                // 404 Item not found
+                alert('Item not found, please, try a valid item!');
+            }
         }
-    }
     xhr.send(barcode)
 }
 
+function validFields() {
+    const form = document.getElementById("saleForm");
+    const inputs = form.querySelectorAll("input");
+    const ps = form.querySelectorAll("p")
+
+    let costumerNameValue = document.getElementById('costumerName').innerText
+    let barcodeValue;
+    let itemDescriptionValue;
+    let quantityValue;
+    let priceValue;
+    let allFieldsFilled = true;
+
+    if (costumerNameValue) {
+           
+        inputs.forEach((input) => {
+            switch (input.name) {
+                case input.name.startsWith("barcode"):
+                    barcodeValue = input.value;
+                    break;
+                case input.name.startsWith("quantity"):
+                    quantityValue = input.value;
+                    break;
+                case input.name.startsWith("price"):
+                    priceValue = input.value;
+                    break;
+            }
+            if (input.required && !input.value.trim()) {
+                allFieldsFilled = false;
+                console.log(input.value)
+            }
+        });
+
+        // Treating innerText null values on form fields
+        if (!allFieldsFilled) {
+            alert("Por favor, preencha todos os campos obrigatórios.");
+            return;
+        } else {
+            ps.forEach((p) => {
+                ps.name.startsWith("itemDescription")
+                    itemDescriptionValue = ps.innerText;
+                    if (input.required && itemDescriptionValue.trim() === '') {
+                        allFieldsFilled = false;
+                        alert("Item description cannot be empty.");
+                })
+            break;
+            if (!allFieldsFilled) {
+                registerSale()
+            }
+
+        }
+
+} else {
+    alert("Set a costumer to complete the sale!");
+    return;
+}
+    }
+     
+
 function registerSale() {
+
     // Header data to input sale
     let formData_costumerRegistry = document.getElementById('costumerRegistry').value
     let formData_costumerName = document.getElementById('costumerName').textContent
@@ -84,11 +162,12 @@ function registerSale() {
     let formData_costumerStore = costumer_store
 
     header_data = {
-                    'costumerRegistry': formData_costumerRegistry,
-                    'costumerName': formData_costumerName,
-                    'costumerCPF': formData_cpf,
-                    'costumerStore': formData_costumerStore
-                }
+        'costumerRegistry': formData_costumerRegistry,
+        'costumerName': formData_costumerName,
+        'costumerCPF': formData_cpf,
+        'costumerStore': formData_costumerStore
+    }
+
     // Items data to input sale
     itemsDiv = document.getElementById('items')
 
@@ -127,7 +206,6 @@ function registerSale() {
         xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             response = JSON.parse(xhr.responseText);
-            console.log('Data sended to register')
             PDFContainer = document.getElementById("receipt");
             PDFContainer.style.visibility = "visible";
             // Sending header data to receipt the sale data to create a pdf
@@ -137,13 +215,18 @@ function registerSale() {
             document.getElementById('RsaleDate').innerText = response.datetime
 
             document.getElementById('RcostumerRegistry').innerText = response.costumer_registry
-            console.log(document.getElementById('RcostumerName').innerText)
             document.getElementById('RcostumerName').innerText = response.costumer_name
-            console.log(document.getElementById('RcostumerName').innerText)
             document.getElementById('RcostumerCPF').innerText = response.costumer_cpf
             document.getElementById('RcostumerStore').innerText = response.costumer_store
             }
 
+        }
+
+        // Cleaning all rows from table
+        rows = document.getElementById('itemsPDF');
+
+        while (rows.firstChild) {
+            rows.removeChild(rows.firstChild)
         }
 
 // Sending items data to receipt the sale data to create a pdf
@@ -174,34 +257,21 @@ function registerSale() {
                 'items': items_json
         })
         xhr.send(sale_data);
-    };
+        setTimeout(printReceipt, 1000);
 
-
-// Hidden form and print window
-function printDiv() {
-
-    // Setting listener to show elements again and confirm sale with alert
-    window.addEventListener('afterprint', function() {
-        saleForm.style.display = ""
-        btnPrint.style.display = ""
-    })
-
-    // Hidden elements and print window
-    saleForm = document.getElementById('saleFormContent')
-    btnPrint = document.getElementById('printSale')
-    saleForm.style.display = "none"
-    btnPrint.style.display = "none"
-
-    // Creating a copy of receipt then printing
-    receiptContainer = document.getElementById('receiptContainer')
-    receiptContainer.insertAdjacentHTML("beforeend", document.getElementById('receiptContainer').innerHTML)
-    window.print()
-    receiptContainer = document.getElementById('receiptContainer')
-    receiptContainer.removeChild(receiptContainer.lastChild)
 }
 
-    // Trying to print converting on a pdf
-function printDiv0() {
+// Trying to print converting on a pdf
+function printReceipt() {
+
+            // Creating a copy of receipt then printing
+            receiptContainer = document.getElementById('receiptContainer')
+            if (receiptContainer.children.length === 1) {
+                receiptContainer.insertAdjacentHTML("beforeend", document.getElementById('receiptContainer').innerHTML)
+            } else {
+                // Do nothing
+            }
+                
             // Create a new jsPDF instance
             const pdf = new window.jspdf.jsPDF({
                 unit: 'mm',
@@ -209,22 +279,20 @@ function printDiv0() {
                 autoPrint: true
             });
 
-            // Get the content of the div you want to print
-            const contentToPrint = document.getElementById("receipt");
-            // Use html2canvas to convert the content to an image
+            const contentToPrint = document.getElementById("receiptContainer");
+
             html2canvas(contentToPrint).then(canvas => {
-                // Convert the canvas to a data URL
                 const imgData = canvas.toDataURL('image/png');
-
-                // Add the image to the PDF
-                pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
-
-                // Open the PDF in a new window
-                const pdfWindow = window.open('', '_blank');
-                pdfWindow.document.write('<html><head><title>Print</title></head><body>');
-                pdfWindow.document.write('<embed width="100%" height="100%" type="application/pdf" src="' + pdf.output('datauristring') + '" />');
-                pdfWindow.document.write('</body></html>');
-
-
-            })
-        };
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, 210, 0);
+                
+                // Convert the PDF to a Blob
+                const pdfBlob = pdf.output('blob');
+                // Create a URL for the Blob
+                const fileURL = URL.createObjectURL(pdfBlob);
+                // Open the PDF in a new tab
+                window.open(fileURL);
+                receiptContainer.removeChild(receiptContainer.lastChild)
+                // To do - Remove the copy of receipt used to print of the user screen
+            });
+}

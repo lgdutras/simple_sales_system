@@ -1,0 +1,28 @@
+.receipt_container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%
+}
+.header_item {
+    display: inline-block;
+    width:24%;
+    text-align: center;
+    }
+.header, .footer {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+    text-align: center;
+    }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    }
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    }
+th {
+    background-color: #f2f2f2;
+    }

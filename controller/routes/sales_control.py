@@ -1,4 +1,4 @@
-from flask import request, session, render_template, Blueprint, jsonify, url_for, redirect
+from flask import request, session, render_template, Blueprint, jsonify, url_for, redirect, abort
 from model.database.dbsales import engine, Session, Costumers, Sales, Items
 import json
 from datetime import datetime
@@ -6,31 +6,52 @@ from datetime import datetime
 BP_register_sales = Blueprint('register_sales', __name__)
 @BP_register_sales.route('/sales/register', methods = ['Post', 'Get'])
 def register_sales():
-    return render_template('register_sale.html')
+    if session.get('logged_in'):
+         
+        return render_template('register_sale.html')
+    else:
+        return redirect(url_for('login.login'))
 
 @BP_register_sales.route('/sales/register/getCostumer', methods=['Post'])
 def get_costumer():
-        costumer_registry = request.data.decode('utf-8')
-        session_costumer = Session()
-        costumer_data = session_costumer.query(Costumers).filter_by(costumer_registry=costumer_registry).first()
-        costumer_name = costumer_data.first_name+' '+costumer_data.last_name
-        costumer_cpf = costumer_data.cpf
-        costumer_store = costumer_data.costumer_store
-        return jsonify({'costumer_name': costumer_name, 'costumer_cpf': costumer_cpf, 'costumer_store': costumer_store})
+
+    costumer_registry = request.data.decode('utf-8')
+    if costumer_registry:
+        # Use a context manager for the session
+        with Session() as session_costumer:
+            costumer_data = session_costumer.query(Costumers).filter_by(costumer_registry=costumer_registry).first()
+
+            if costumer_data:
+                costumer_name = costumer_data.first_name + ' ' + costumer_data.last_name
+                costumer_cpf = costumer_data.cpf
+                costumer_store = costumer_data.costumer_store
+                return jsonify({'costumer_name': costumer_name, 'costumer_cpf': costumer_cpf, 'costumer_store': costumer_store})
+            else:
+                abort(404, "Customer not found")
+    else:
+        abort(400, "Missing 'costumer_registry' in the request data")
 
 @BP_register_sales.route('/sales/register/getItem', methods=['Post'])
 def get_item():
-     sale_store = str(session['user_store'])
-     barcode = request.data.decode('utf-8')
-     session_item = Session()
-     item_data = session_item.query(Items).filter_by(barcode=barcode, store=sale_store).first()
-     item_description = item_data.description
-     item_price_suggested = float(item_data.price) / 2
-     item_quantity_avaliable = item_data.quantity
 
-     return jsonify({'itemDescription': item_description,
-                     'suggestedPrice': item_price_suggested,
-                     'AvaliableQuantity': item_quantity_avaliable})
+    barcode = request.data.decode('utf-8')
+    if barcode:
+        sale_store = str(session['user_store'])
+        session_item = Session()
+        item_data = session_item.query(Items).filter_by(barcode=barcode, store=sale_store).first()
+
+        if item_data:
+            item_description = item_data.description
+            item_price_suggested = float(item_data.price) / 2
+            item_quantity_avaliable = item_data.quantity
+                
+            return jsonify({'itemDescription': item_description,
+                            'suggestedPrice': item_price_suggested,
+                            'AvaliableQuantity': item_quantity_avaliable})
+        else: abort(404, 'Item not found')
+    else:
+        return abort(400, 'Invalid Barcode')
+
 
 @BP_register_sales.route('/sales/register/setPrint', methods=['Post', 'Get'])
 def set_print():
@@ -59,13 +80,14 @@ def set_print():
 def registerSale():
     # Get full sale data
     sale_data = request.get_json()
-    print(sale_data)
+
     header_data = json.loads(sale_data['header'])
     # Set Header to input on database
     costumerRegistry = header_data['costumerRegistry']
     costumerStore = header_data['costumerStore']
     costumerName = header_data['costumerName']
     costumerCPF = header_data['costumerCPF']
+    
     # Get items to input on database
     items_data = json.loads(sale_data['items'])
 
