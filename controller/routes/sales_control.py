@@ -106,7 +106,7 @@ def registerSale():
                         costumer_store = int(costumerStore),
                         item_id = int(item[1]['barcode']),
                         quantity = int(item[1]['quantity']),
-                        unit_price = int(item[1]['price'])
+                        unit_price = float(item[1]['price'])
                         )
         session_sale.add(new_item)
         session_sale.commit()

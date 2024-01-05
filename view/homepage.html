@@ -5,27 +5,28 @@
     <title>SSS Homepage</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='style/register_sale.css')}}">
 </head>
-<body>
-
-    <nav class="navbar navbar-dark bg-dark">
-        <a class="navbar-brand" href="{{ url_for('home.homepage') }}">bigmais</a>
+<body >
+    <!-- Navbar Content -->
+    <nav class="navbar navbar-dark bg-dark bg-gradient">
+        <a class="navbar-brand" href="{{ url_for('home.homepage') }}">Entreprise Name</a>
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('register_sales.register_sales') }}">Sell</a>
+                <a class="nav-link-i nav-link" href="{{ url_for('register_sales.register_sales') }}">Sell</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('view_sales.view_sales') }}">Sales Dashboard</a>
+                <a class="nav-link disabled nav-link-i" href="{{ url_for('view_sales.view_sales') }}">Sales Dashboard</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('register_products.register_products') }}">Register Product</a>
+                <a class="nav-link disabled nav-link-i" href="{{ url_for('register_products.register_products') }}">Register Product</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('register_users.register_users') }}">Register Customer</a>
+                <a class="nav-link disabled nav-link-i" href="{{ url_for('register_users.register_users') }}">Register Customer</a>
             </li>
             <li class="nav-item">
                 <form action="{{ url_for('logout.logout') }}" method="GET">
-                    <button type="submit" class="btn btn-light btn-sm">Logout</button>
+                    <button type="submit" class="btn btn-light btn-sm" onclick="">Logout</button>
                 </form>
             </li>
         </ul>

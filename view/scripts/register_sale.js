@@ -6,19 +6,19 @@ function addItem() { // Add Items
 
     const dynamicFields = document.getElementById("items");
     const newItem = `
-    <div id="item${itemCounter}" class="form-group d-inline-flex row">
-        <label for="barcode${itemCounter}">EAN:</label>
-        <input type="text" name="barcode${itemCounter}" id="barcode${itemCounter}" class="form-control" onchange= "getItem('${itemCounter}')" required><br><br>
+    <div id="item${itemCounter}" class="form-row d-inline-flex row mb-1">
+        <label for="barcode${itemCounter}" display: block>EAN:</label>
+        <input type="text" name="barcode${itemCounter}" id="barcode${itemCounter}" class="form-control mr-1" onchange= "getItem('${itemCounter}')" required>
 
-        <input id="itemDescription${itemCounter}" placeholder="Item Description" class= "form-control" required disabled></p>
+        <input id="itemDescription${itemCounter}" placeholder="Item Description" class="form-control mr-1" required disabled></p>
 
-        <label for="item">Quantity:</label>
-        <input type="number" name="quantity${itemCounter}" id="quantity${itemCounter}" class="form-control" required disabled><br><br>
+        <label for="quantity${itemCounter}" display: block>Quantity:</label>
+        <input type="number" name="quantity${itemCounter}" id="quantity${itemCounter}" class="form-control mr-1" required disabled>
         
-        <label for="item">Price:</label>
-        <input type="number" name="price${itemCounter}" id="price${itemCounter}" class="form-control" required disabled><br><br>
+        <label for="price${itemCounter}" display: block>Price:</label>
+        <input type="number" name="price${itemCounter}" id="price${itemCounter}" class="form-control mr-1" required disabled>
         
-        <button type="button" class="btn btn-danger" onclick="removeItem(${itemCounter})" > X </button>
+        <button type="button" class="btn btn-danger form-control" onclick="removeItem(${itemCounter})" > X </button>
     </div>
     `;
 
@@ -232,7 +232,7 @@ function registerSale() {
         xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             response = JSON.parse(xhr.responseText);
-            PDFContainer = document.getElementById("receipt");
+            PDFContainer = document.getElementById("receiptContainer");
             PDFContainer.style.visibility = "visible";
             // Sending header data to receipt the sale data to create a pdf
             document.getElementById('RsaleStore').innerText = response.sale_store
@@ -297,7 +297,12 @@ function printReceipt() {
             } else {
                 // Do nothing
             }
-                
+            if (receiptContainer.style.visibility = 'collapse') {
+                receiptContainer.style.visibility = 'visible'
+            } else {
+                // Do nothing
+            }
+
             // Create a new jsPDF instance
             const pdf = new window.jspdf.jsPDF({
                 unit: 'mm',
@@ -320,5 +325,57 @@ function printReceipt() {
                 window.open(fileURL);
                 // To do - Remove the copy of receipt used to print of the user screen
             });
-            document.getElementById('receiptContainer').removeChild(document.getElementById('receiptContainer').lastChild)
+            receiptContainer.removeChild(receiptContainer.lastChild)
+            receiptContainer.style.visibility = 'collapse'
+}
+
+function cleanForm() {
+    receiptContainer = document.getElementById('receiptContainer')
+    receiptContainer.innerHTML = `
+    <div id="receipt" name="receipt" class="receipt_container bg-white">
+    <div class="header">
+        <h2>Receipt</h2>
+        <div id="sale_info">
+            <p class="header_item">Sale Store: <span id="RsaleStore"></span></p>
+            <p class="header_item">Sale ID: <span id="RsaleId"></span></p>
+            <p class="header_item">Seller Name: <span id="RsellerName"></span></p>
+            <p class="header_item">Sale Date: <span id="RsaleDate"></span></p>
+        </div>
+        <div id="costumer_info">
+            <p class="header_item">Costumer Registry: <span id="RcostumerRegistry"></span></p>
+            <p class="header_item">Costumer Name: <span id="RcostumerName"></span></p>
+            <p class="header_item">Costumer CPF: <span id="RcostumerCPF"></span></p>
+            <p class="header_item">Costumer Store: <span id="RcostumerStore"></span></p>
+        </div>
+    </div>
+
+    <div class="body">
+        <table id="items_info">
+            <thead>
+                <tr>
+                    <th>Barcode</th>
+                    <th>Item Description</th>
+                    <th>Item Quantity</th>
+                    <th>Price</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody id="itemsPDF">
+                <!-- Add dynamic rows for each item in the sale -->
+
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+    `
+    receiptContainer.style.visibility = 'collapse'
+    itemsForm = document.getElementById('items')
+    while (itemsForm.children.length > 1) {
+        itemsForm.removeChild(itemsForm.lastChild)
+        document.getElementById('itemDescription1').placeholder = 'Item Description'
+        document.getElementById('quantity1').placeholder = ''
+        document.getElementById('price1').placeholder = ''
+        document.getElementById('costumerName').placeholder = 'Costumer Name'
+    }
+    itemCounter = 2
 }

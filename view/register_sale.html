@@ -1,29 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Register Sale</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{url_for('static', filename='style/register_sale.css')}}">
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark">
-        <a class="navbar-brand" href="{{ url_for('home.homepage') }}">bigmais</a>
+    <!-- Navbar Content -->
+    <nav class="navbar navbar-dark bg-dark bg-gradient">
+        <a class="navbar-brand" href="{{ url_for('home.homepage') }}">Entreprise Name</a>
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('register_sales.register_sales') }}">Sell</a>
+                <a class="nav-link-i nav-link" href="{{ url_for('register_sales.register_sales') }}">Sell</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('view_sales.view_sales') }}">Sales Dashboard</a>
+                <a class="nav-link disabled nav-link-i" href="{{ url_for('view_sales.view_sales') }}">Sales Dashboard</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('register_products.register_products') }}">Register Product</a>
+                <a class="nav-link disabled nav-link-i" href="{{ url_for('register_products.register_products') }}">Register Product</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('register_users.register_users') }}">Register Customer</a>
+                <a class="nav-link disabled nav-link-i" href="{{ url_for('register_users.register_users') }}">Register Customer</a>
             </li>
             <li class="nav-item">
                 <form action="{{ url_for('logout.logout') }}" method="GET">
-                    <button type="submit" class="btn btn-light btn-sm">Logout</button>
+                    <button type="submit" class="btn btn-light btn-sm" onclick="">Logout</button>
                 </form>
             </li>
         </ul>
@@ -32,44 +35,44 @@
     <div id="saleFormContent" style="visibility: visible;">
     <h1 id="TitleHead">Register Sale</h1>
 
-    <form id="saleForm" class="container" method="post">
+    <form id="saleForm" class="container align-items-center justify-content-center" method="post">
         <!-- Fixed fields: User Registry and Item -->
-        <div id="form-header" class="container form-check-inline">
+        <div id="form-header" class="container form-inline row justify-content-center mb-1">
             <input hidden name="itemCounter" id="itemCounter" value="1">
-            <input type="text" name="costumerRegistry" id="costumerRegistry" palceholder="Costumer Registry" class="form-control" style="width: 10%" onchange="getCostumer()" required>
-            <input id="costumerName" placeholder="Costumer Name" class= "form-control" required disabled>
+            <input type="text" name="costumerRegistry" id="costumerRegistry" palceholder="Costumer Registry" class="form-control col-sm mr-1" style="max-width: 10%" onchange="getCostumer()" required>
+            <input id="costumerName" placeholder="Costumer Name" class="form-control col-sm mr-1" style="max-width: 60%"required disabled>
         </div>
 
-        <div id="items" class="form-inline">
-            <div id="item1" class="form-row d-inline-flex row">
-                    <label for="barcode1"display: block>EAN:</label>
-                    <input type="text" name="barcode1" id="barcode1" class="form-control" onchange= "getItem('1')" required>
+        <div id="items" class="form-inline container align-items-center justify-content-center border border-1 rounded p-1 bg-white">
+            <div id="item1" class="form-row d-inline-flex row mb-1 mt-1">
+                    <label for="barcode1" display: block>EAN:</label>
+                    <input type="text" name="barcode1" id="barcode1" class="form-control mr-1" onchange= "getItem('1')" required>
                     
-                    <input id="itemDescription1" placeholder="Item Description" class= "form-control" required disabled>
+                    <input id="itemDescription1" placeholder="Item Description" class= "form-control mr-1" required disabled>
 
                     <label for="quantity1" display: block>Quantity:</label>
-                    <input type="number" name="quantity1" id="quantity1" class="form-control" required disabled>
+                    <input type="number" name="quantity1" id="quantity1" class="form-control mr-1" required disabled>
                 
                     <label for="price1"display: block>Price:</label>
-                    <input type="number" name="price1" id="price1" class="form-control" required disabled>
+                    <input type="number" name="price1" id="price1" class="form-control mr-1" required disabled>
                     
-                    <button type="button" class="btn btn-danger" onclick="removeItem(1)" > X </button>
+                    <button type="button" class="btn btn-danger form-control" onclick="removeItem(1)" > X </button>
             </div>
         <!-- Dynamic fields for additional items -->
             <!-- JavaScript will add fields here 
         
             -->
         </div>
-        <div id="buttonsDiv" class="container form-inline padding receipt_container">
-            <button type="button" class="btn btn-primary" onclick="addItem()">Add Item</button>
-            <button type="button" id="submitBtn" class="btn btn-success" onclick="validFields()">Submit</button>
-            <button type="button" id="printBtn" class="btn" id="printSale" onclick="printReceipt()">Print</button>
-            <button type="reset" id="resetBtn" class="btn btn-warning">Reset</button>
+        <div id="buttonsDiv" class="container form-inline padding receipt_container align-items-center justify-content-center mt-1 mb-1">
+            <button type="button" class="btn btn-primary mr-1" onclick="addItem()">Add Item</button>
+            <button type="button" id="submitBtn" class="btn btn-success mr-1" onclick="validFields()">Submit</button>
+            <button type="button" id="printBtn" class="btn mr-1" id="printSale" onclick="printReceipt()">Print</button>
+            <button type="reset" id="resetBtn" class="btn btn-warning mr-1" onclick="cleanForm()">Reset</button>
         </div>
     </form>
     </div>
-    <div id="receiptContainer">
-        <div id="receipt" name="receipt" class="receipt_container" style="visibility: collapse;">
+    <div id="receiptContainer" class="container" style="visibility: collapse;">
+        <div id="receipt" name="receipt" class="receipt_container bg-white">
             <div class="header">
                 <h2>Receipt</h2>
                 <div id="sale_info">

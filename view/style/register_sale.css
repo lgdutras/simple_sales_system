@@ -1,3 +1,6 @@
+.nav-link-i {
+    color: #fff;
+}
 .center {
     align-items: center;
 }
@@ -16,6 +19,9 @@
     padding: 10px 0;
     text-align: center;
     }
+body {
+    background-color: #f8f9fa;
+}
 table {
     width: 100%;
     border-collapse: collapse;
