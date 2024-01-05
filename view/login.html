@@ -1,12 +1,26 @@
 <html5>
     <head>
         <title>SSS Login</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{url_for('static', filename='style/login.css')}}">
     </head>
     <body>
-        <form method="POST">
-            login: <input name="username" value=''><br>
-            senha: <input name="pw" type="password" value=''><br>
-            <input name="login" type='submit' value='Entrar'>
-        </form>
+
+        <div id="loginBox" class=" bg-light bg-gradient login-box container align-items-center justify-content-center form-group mt-5 mb-3 border rounded">
+            <div id="loginHeader">
+                <h1 class="display-3 monospace">
+                    Enterprise Name
+                </p>
+                <h2 class="display-4 monospace">
+                    Login
+                </span>
+            </div>
+            <form method="POST" class="mt-4">
+                <input id="username" name="username" placeholder="username" class="form-control mb-2">
+                <input id="pw" name="pw" type="password" placeholder="password" class="form-control mb-2">
+                <input name="login" type='submit' class="btn btn-dark btn-block mb-2" value='Login'>
+            </form>
+        </div>
+
     </body>
 </html5>

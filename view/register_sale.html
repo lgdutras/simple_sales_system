@@ -33,9 +33,9 @@
     </nav>
 
     <div id="saleFormContent" style="visibility: visible;">
-    <h1 id="TitleHead">Register Sale</h1>
+    <h1 id="TitleHead" class="fw-light display-5 mt-4 ml-5">Register Sale</h1>
 
-    <form id="saleForm" class="container align-items-center justify-content-center" method="post">
+    <form id="saleForm" class="container align-items-center justify-content-center mt-5" method="post">
         <!-- Fixed fields: User Registry and Item -->
         <div id="form-header" class="container form-inline row justify-content-center mb-1">
             <input hidden name="itemCounter" id="itemCounter" value="1">
@@ -43,7 +43,7 @@
             <input id="costumerName" placeholder="Costumer Name" class="form-control col-sm mr-1" style="max-width: 60%"required disabled>
         </div>
 
-        <div id="items" class="form-inline container align-items-center justify-content-center border border-1 rounded p-1 bg-white">
+        <div id="items" class="form-inline container align-items-center justify-content-center border border-1 rounded p-1 mt-5 bg-white">
             <div id="item1" class="form-row d-inline-flex row mb-1 mt-1">
                     <label for="barcode1" display: block>EAN:</label>
                     <input type="text" name="barcode1" id="barcode1" class="form-control mr-1" onchange= "getItem('1')" required>
