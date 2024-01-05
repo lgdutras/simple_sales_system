@@ -3,23 +3,25 @@ let itemCounter = 2; // for addNewItemFiled function
 let costumer_cpf = ""; // Costumer identification data that will be saved on sale registry
 
 function addItem() { // Add Items
+
     const dynamicFields = document.getElementById("items");
     const newItem = `
     <div id="item${itemCounter}" class="form-group d-inline-flex row">
         <label for="barcode${itemCounter}">EAN:</label>
         <input type="text" name="barcode${itemCounter}" id="barcode${itemCounter}" class="form-control" onchange= "getItem('${itemCounter}')" required><br><br>
 
-        <p id="itemDescription${itemCounter}"></p>
+        <input id="itemDescription${itemCounter}" placeholder="Item Description" class= "form-control" required disabled></p>
 
         <label for="item">Quantity:</label>
-        <input type="number" name="quantity${itemCounter}" id="quantity${itemCounter}" class="form-control" required><br><br>
+        <input type="number" name="quantity${itemCounter}" id="quantity${itemCounter}" class="form-control" required disabled><br><br>
         
         <label for="item">Price:</label>
-        <input type="number" name="price${itemCounter}" id="price${itemCounter}" class="form-control" required><br><br>
+        <input type="number" name="price${itemCounter}" id="price${itemCounter}" class="form-control" required disabled><br><br>
         
         <button type="button" class="btn btn-danger" onclick="removeItem(${itemCounter})" > X </button>
     </div>
     `;
+
     document.getElementById("itemCounter").value = itemCounter;
     dynamicFields.insertAdjacentHTML("beforeend", newItem);
     itemCounter++;
@@ -37,6 +39,7 @@ function removeItem(item) {
 function getCostumer() {
     var xhr = new XMLHttpRequest();
     var user_registry_field = document.getElementById('costumerRegistry').value;
+    var costumerNameField = document.getElementById('costumerName');
 
     xhr.open('POST', '/sales/register/getCostumer', true);
     xhr.setRequestHeader('Content-Type', 'text/plain');
@@ -44,23 +47,32 @@ function getCostumer() {
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             // On sucessfull response
-
+            
             // Clear costumer name
-            document.getElementById('costumerName').innerHTML = ""
+            costumerNameField.value = ""
 
             // Handle the response from the server
             var response = JSON.parse(xhr.responseText);
             costumer_cpf = response.costumer_cpf;
             costumer_name = response.costumer_name;
             costumer_store = response.costumer_store;
-            document.getElementById('costumerName').innerHTML = costumer_name;
+            costumerNameField.value = costumer_name;
+            costumerNameField.placeholder = costumer_name;
             
                 } else if (xhr.readyState === 4 && xhr.status === 404) {
                     // 404 if costumer not found
-                    
-                    alert('Costumer not found. Please, type a valid costumer');
-                    document.getElementById('costumerName').innerHTML = '';
+                    if (costumerNameField.value) {
 
+                        costumerNameField.value = ''
+                        costumerNameField.placeholder = 'Invalid Costumer'
+                        alert('Costumer not found. Please, type a valid costumer')
+
+                    } else {
+
+                    costumerNameField.placeholder = 'Invalid Costumer'
+                    alert('Costumer not found. Please, type a valid costumer')
+
+                    }
                 }
             }    // Send the POST request with the costumerRegistryField as data
     xhr.send(user_registry_field);
@@ -82,14 +94,37 @@ function getItem(item) {
         if (xhr.readyState === 4 && xhr.status === 200) {
 
             var response = JSON.parse(xhr.responseText);
-            itemDesc.innerHTML = response.itemDescription;
+
+            itemDesc.value = response.itemDescription;
+            itemDesc.placeholder = response.itemDescription
+
+            itemQuantity.disabled = false;
+            itemPrice.disabled = false;
+
             itemPrice.placeholder = response.suggestedPrice;
             itemQuantity.placeholder = response.AvaliableQuantity; 
 
             } else if (xhr.readyState === 4 && xhr.status === 404) {
-
                 // 404 Item not found
-                alert('Item not found, please, try a valid item!');
+                alert('Item not found, please, try a valid item!')
+
+                // Check if field is open then close
+                if (itemPrice.disabled === false) {
+                    
+                    itemPrice.disabled = true;
+                    itemQuantity.disabled = true;
+
+                    itemDesc.placeholder = 'Invalid Item';
+                    itemPrice.placeholder = itemQuantity.placeholder = '';
+                    itemDesc.value = itemPrice.value = itemQuantity.value = '';
+
+                } else {
+
+                    itemDesc.placeholder = 'Invalid Item';
+                    itemPrice.placeholder = itemQuantity.placeholder = '';
+                    itemDesc.value = itemPrice.value = itemQuantity.value = '';
+
+                }
             }
         }
     xhr.send(barcode)
@@ -100,7 +135,7 @@ function validFields() {
     const inputs = form.querySelectorAll("input");
     const ps = form.querySelectorAll("p")
 
-    let costumerNameValue = document.getElementById('costumerName').innerText
+    let costumerNameValue = document.getElementById('costumerName').value
     let barcodeValue;
     let itemDescriptionValue;
     let quantityValue;
@@ -113,6 +148,9 @@ function validFields() {
             switch (input.name) {
                 case input.name.startsWith("barcode"):
                     barcodeValue = input.value;
+                    break;
+                case input.name.startsWith("itemDescription"):
+                    itemDescriptionValue = input.value;
                     break;
                 case input.name.startsWith("quantity"):
                     quantityValue = input.value;
@@ -127,23 +165,11 @@ function validFields() {
             }
         });
 
-        // Treating innerText null values on form fields
         if (!allFieldsFilled) {
-            alert("Por favor, preencha todos os campos obrigatórios.");
+            alert("Please, fill all required fields.");
             return;
         } else {
-            ps.forEach((p) => {
-                ps.name.startsWith("itemDescription")
-                    itemDescriptionValue = ps.innerText;
-                    if (input.required && itemDescriptionValue.trim() === '') {
-                        allFieldsFilled = false;
-                        alert("Item description cannot be empty.");
-                })
-            break;
-            if (!allFieldsFilled) {
-                registerSale()
-            }
-
+            registerSale()
         }
 
 } else {
@@ -157,7 +183,7 @@ function registerSale() {
 
     // Header data to input sale
     let formData_costumerRegistry = document.getElementById('costumerRegistry').value
-    let formData_costumerName = document.getElementById('costumerName').textContent
+    let formData_costumerName = document.getElementById('costumerName').value
     let formData_cpf = costumer_cpf
     let formData_costumerStore = costumer_store
 
@@ -183,7 +209,7 @@ function registerSale() {
         
         // 2. Then declare to a variable each form field on selected item
         formData_barcode = document.getElementById('barcode'+item_id).value
-        formData_itemDescription = document.getElementById('itemDescription'+item_id).textContent
+        formData_itemDescription = document.getElementById('itemDescription'+item_id).value
         formData_quantity = document.getElementById('quantity'+item_id).value
         formData_price = document.getElementById('price'+item_id).value
         
@@ -292,7 +318,7 @@ function printReceipt() {
                 const fileURL = URL.createObjectURL(pdfBlob);
                 // Open the PDF in a new tab
                 window.open(fileURL);
-                receiptContainer.removeChild(receiptContainer.lastChild)
                 // To do - Remove the copy of receipt used to print of the user screen
             });
+            document.getElementById('receiptContainer').removeChild(document.getElementById('receiptContainer').lastChild)
 }

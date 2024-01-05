@@ -3,22 +3,38 @@
 
 <head>
     <title>SSS Homepage</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-
 <body>
-    <h1>Welcome, {{ session['firstname'] }}</h1>
-    
-    <!-- Navigation Menu -->
-    <ul>
-        <li><a href="{{ url_for('register_sales.register_sales') }}">Sell</a></li>
-        <li><a href="{{ url_for('view_sales.view_sales') }}">Sales Dashboard</a></li>
-        <li><a href="{{ url_for('register_products.register_products') }}">Register Product</a></li>
-        <li><a href="{{ url_for('register_users.register_users') }}">Register Costumer</a></li>
-    </ul>
 
-    <form action="{{ url_for('logout.logout') }}" method="GET">
-        <button type="submit">Logout</button>
-    </form>
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="{{ url_for('home.homepage') }}">bigmais</a>
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('register_sales.register_sales') }}">Sell</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('view_sales.view_sales') }}">Sales Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('register_products.register_products') }}">Register Product</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('register_users.register_users') }}">Register Customer</a>
+            </li>
+            <li class="nav-item">
+                <form action="{{ url_for('logout.logout') }}" method="GET">
+                    <button type="submit" class="btn btn-light btn-sm">Logout</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Bootstrap JS and dependencies (jQuery and Popper.js) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
-
 </html>
