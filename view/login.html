@@ -2,7 +2,7 @@
     <head>
         <title>SSS Login</title>
         <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
-        <link rel='stylesheet' href='{{url_for('static', filename='style/login.css')}}'>
+        <link rel='stylesheet' href="{{url_for('static', filename='style/login.css')}}">
     </head>
     <body class='h-100 w-100 d-flex align-items-center container justify-content-center'>
             <div id='LoginBox' class='bg-light bg-gradient justify-content-center' style="border-radius: 12px; width: 100%;">
@@ -15,15 +15,15 @@
                 <div id='LoginForm' class="m-5 pb-5">
                     <form method='POST' class="mb-2">
                         <div id="UserGroup" class="input-group">
-                            <span id='user-ico' class="input-group-text mb-2">
+                            <span id='user-ico' class="input-group-text mb-2" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
                                     <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"></path>
                                 </svg>
                             </span>
                             <input id='username' name='username' placeholder='username' class='form-control mb-2'>
                         </div>
-                            <div id="passwordgroup" class="input-group">
-                                <span id='pass-ico' class="input-group-text mb-2">
+                            <div id="PasswordGroup" class="input-group">
+                                <span id='pass-ico' class="input-group-text mb-2" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key-fill" viewBox="0 0 16 16">
                                         <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2M2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2"/>
                                     </svg>

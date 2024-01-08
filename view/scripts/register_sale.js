@@ -7,17 +7,10 @@ function addItem() { // Add Items
     const dynamicFields = document.getElementById("items");
     const newItem = `
     <div id="item${itemCounter}" class="form-row d-inline-flex row mb-1">
-        <label for="barcode${itemCounter}" display: block>EAN:</label>
-        <input type="text" name="barcode${itemCounter}" id="barcode${itemCounter}" class="form-control mr-1" onchange= "getItem('${itemCounter}')" required>
-
-        <input id="itemDescription${itemCounter}" placeholder="Item Description" class="form-control mr-1" required disabled></p>
-
-        <label for="quantity${itemCounter}" display: block>Quantity:</label>
-        <input type="number" name="quantity${itemCounter}" id="quantity${itemCounter}" class="form-control mr-1" required disabled>
-        
-        <label for="price${itemCounter}" display: block>Price:</label>
-        <input type="number" name="price${itemCounter}" id="price${itemCounter}" class="form-control mr-1" required disabled>
-        
+        <input type="text" name="barcode${itemCounter}" id="barcode${itemCounter}" placeholder="Barcode" class="form-control mr-1 col-sm-2" onchange= "getItem('${itemCounter}')" required>
+        <input id="itemDescription${itemCounter}" placeholder="Item Description" class="form-control mr-1 col-md" required disabled></p>
+        <input type="number" name="quantity${itemCounter}" id="quantity${itemCounter}" placeholder="Quantity" class="form-control mr-1 col-sm-2" required disabled>
+        <input type="number" name="price${itemCounter}" id="price${itemCounter}" placeholder="Price Ex. 5.99" class="form-control mr-1 col-sm-2" required disabled>
         <button type="button" class="btn btn-danger form-control" onclick="removeItem(${itemCounter})" > X </button>
     </div>
     `;
@@ -325,8 +318,6 @@ function printReceipt() {
                 window.open(fileURL);
                 // To do - Remove the copy of receipt used to print of the user screen
             });
-            receiptContainer.removeChild(receiptContainer.lastChild)
-            receiptContainer.style.visibility = 'collapse'
 }
 
 function cleanForm() {
@@ -370,12 +361,17 @@ function cleanForm() {
     `
     receiptContainer.style.visibility = 'collapse'
     itemsForm = document.getElementById('items')
-    while (itemsForm.children.length > 1) {
-        itemsForm.removeChild(itemsForm.lastChild)
-        document.getElementById('itemDescription1').placeholder = 'Item Description'
-        document.getElementById('quantity1').placeholder = ''
-        document.getElementById('price1').placeholder = ''
-        document.getElementById('costumerName').placeholder = 'Costumer Name'
-    }
+
+    if (itemsForm.children.length > 1) {
+        while (itemsForm.children.length > 1) {
+            itemsForm.removeChild(itemsForm.lastChild)
+            }
+        }
+    document.getElementById('itemDescription1').placeholder = 'Item Description'
+    document.getElementById('quantity1').placeholder = ''
+    document.getElementById('price1').placeholder = ''
+    document.getElementById('costumerName').placeholder = 'Costumer Name'
     itemCounter = 2
+
+    receiptContainer.removeChild(receiptContainer.lastChild)
 }
