@@ -52,7 +52,19 @@
                         <input id="itemDescription1" placeholder="Item Description" class="form-control mr-1 col-md" required disabled>
                         <input type="number" name="quantity1" id="quantity1" placeholder="Quantity" class="form-control mr-1 col-sm-2" required disabled>
                         <input type="number" name="price1" id="price1" placeholder="Price Ex. 5.99" class="form-control mr-1 col-sm-2" required disabled>
-                        <button type="button" class="btn btn-danger form-control" onclick="removeItem(1)" > X </button>
+                        <button type="button" name="lock1" id="lock1" class="btn btn-primary form-control pt-2 mr-1" onclick="LockUnlockItem(1)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                                <path id='icoLock1' value="unlocked" d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2"/>
+                            </svg>
+                        </button>
+                        
+                        <button type="button" class="btn btn-danger form-control pt-2" onclick="removeItem(1)" >
+                            <span id='pass-ico' class='mb-0'>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                                </svg>
+                            </span>
+                        </button>
                 </div>
             <!-- Dynamic fields for additional items -->
                 <!-- JavaScript will add fields here 

@@ -1,6 +1,14 @@
 
 let itemCounter = 2; // for addNewItemFiled function
 let costumer_cpf = ""; // Costumer identification data that will be saved on sale registry
+let receipt_id = '';
+/*
+Receipt Id is set null on load and is used on function OpenReceipt to check if is one receipt opened.
+The check is done on backend in openReceipt Endpoint.
+
+Current receipt Id is passed and if exists with opened status is deleted on database.
+Existing or not, the code procedes to open a new receipt
+*/
 
 function addItem() { // Add Items
 
@@ -11,7 +19,19 @@ function addItem() { // Add Items
         <input id="itemDescription${itemCounter}" placeholder="Item Description" class="form-control mr-1 col-md" required disabled></p>
         <input type="number" name="quantity${itemCounter}" id="quantity${itemCounter}" placeholder="Quantity" class="form-control mr-1 col-sm-2" required disabled>
         <input type="number" name="price${itemCounter}" id="price${itemCounter}" placeholder="Price Ex. 5.99" class="form-control mr-1 col-sm-2" required disabled>
-        <button type="button" class="btn btn-danger form-control" onclick="removeItem(${itemCounter})" > X </button>
+        <button type="button" name="lock${itemCounter}" id="lock${itemCounter}" class="btn btn-primary form-control pt-2 mr-1" onclick="LockUnlockItem(${itemCounter})">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+            <path id='icoLock1' value="unlocked" d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2"/>
+        </svg>
+    </button>
+    
+    <button type="button" class="btn btn-danger form-control pt-2" onclick="removeItem(${itemCounter})" >
+        <span id='pass-ico' class='mb-0'>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+            </svg>
+        </span>
+    </button>
     </div>
     `;
 
@@ -23,6 +43,29 @@ function addItem() { // Add Items
 function removeItem(item) {
     const dynamicFields = document.getElementById("items");
     const itemToRemove = document.getElementById("item"+item)
+
+    let barcode = document.getElementById('barcode'+item)
+
+    xhr = new XMLHttpRequest()
+    xhr.open('POST', 'sales/register/removeItem')
+    xhr.setRequestHeader('Content-Type', 'application/json')
+
+    xhr.onreadystatechange = function() {
+
+        if (xhr.readyState == 4 && xhr.status == 200) {
+
+            response = JSON.parse(xhr.responseText)
+
+        }
+
+        deletionItem = JSON.stringify({
+            'barcode': barcode,
+            'receipt_id': receipt_id
+        })
+
+        xhr.send(barcode)
+    }
+
 
     if (itemToRemove) {
         dynamicFields.removeChild(itemToRemove);
@@ -51,6 +94,7 @@ function getCostumer() {
             costumer_store = response.costumer_store;
             costumerNameField.value = costumer_name;
             costumerNameField.placeholder = costumer_name;
+            openReceipt(user_registry_field)
             
                 } else if (xhr.readyState === 4 && xhr.status === 404) {
                     // 404 if costumer not found
@@ -69,6 +113,30 @@ function getCostumer() {
                 }
             }    // Send the POST request with the costumerRegistryField as data
     xhr.send(user_registry_field);
+}
+
+function openReceipt(costumer_registry) {
+    xhr = new XMLHttpRequest();
+    
+    xhr.open('POST', '/sales/register/openReceipt', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    receiptHeader = {
+        'costumer_registry': costumer_registry,
+        'costumer_store': costumer_store,
+        'receipt_id': receipt_id
+    }
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            receipt_id = response.receipt_id
+            console.log('The new receipt id is ' + receipt_id)
+        }
+    }
+
+    jsonReceiptHeader = JSON.stringify(receiptHeader)
+    xhr.send(jsonReceiptHeader);
 }
 
 function getItem(item) {
@@ -123,6 +191,82 @@ function getItem(item) {
     xhr.send(barcode)
 }
 
+function holdItem(item) {
+    // This function will write the requested item on database where getItem returns positive
+
+    row_id = item
+    barcode = document.getElementById('barcode'+row_id)
+    quantity = document.getElementById('quantity'+row_id)
+    price = document.getElementById('price'+row_id)
+
+    xhr = new XMLHttpRequest();
+    xhr.open('POST', '/sales/register/holdItem')
+    xhr.setRequestHeader('Content-Type', 'application/json')
+
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+
+            response = JSON.parse(xhr.responseText);
+            barcode.disabled = true
+        }
+    }
+
+    item = {
+        'receipt_id': receipt_id,
+        'barcode': barcode.value,
+        'quantity': quantity.value,
+        'price': price.value
+    }
+
+    xhr.send(JSON.stringify(item))
+}
+
+function LockUnlockItem(item) {
+
+    unlockedIco = "M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2"
+    lockedIco = "M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"
+
+    lockIco = document.getElementById('icoLock1')
+    icoPath = lockIco.getAttribute('d')
+    icoValue = lockIco.getAttribute('value')
+    
+    // Fields to manage
+    barcode = document.getElementById('barcode'+item)
+    quantity = document.getElementById('quantity'+item)
+    price = document.getElementById('price'+item)
+
+
+    if (icoValue == 'unlocked') {
+        // Set locked then change ico
+        lockIco.setAttribute("value", "locked")
+        lockIco.setAttribute("d", lockedIco)
+
+        // Call hold items to register item on database in a opened receipt or update the current value
+        holdItem(item)
+
+        // Lock Fields
+        barcode.disabled =  true
+        quantity.disabled = true
+        price.disabled = true
+
+    } else {
+        // Unlock can be use tu adjust the ammount of item or price. To remove a item, user must remove the line, what will result in a deletion of the item on database
+
+
+        // Set locked then change ico
+        lockIco.setAttribute("value", "unlocked")
+        lockIco.setAttribute("d", unlockedIco)
+
+        // Unlock Fields
+        barcode.disabled =  false
+        quantity.disabled = false
+        price.disabled = false
+    }
+
+    
+}
+
 function validFields() {
     const form = document.getElementById("saleForm");
     const inputs = form.querySelectorAll("input");
@@ -133,6 +277,7 @@ function validFields() {
     let itemDescriptionValue;
     let quantityValue;
     let priceValue;
+    let lockValue;
     let allFieldsFilled = true;
 
     if (costumerNameValue) {
@@ -151,6 +296,9 @@ function validFields() {
                 case input.name.startsWith("price"):
                     priceValue = input.value;
                     break;
+                case input.name.startsWith("lock"):
+                    lockValue = 'unlock'
+
             }
             if (input.required && !input.value.trim()) {
                 allFieldsFilled = false;
@@ -162,16 +310,15 @@ function validFields() {
             alert("Please, fill all required fields.");
             return;
         } else {
-            registerSale()
+            //registerSale()
         }
 
 } else {
     alert("Set a costumer to complete the sale!");
     return;
 }
-    }
+}
      
-
 function registerSale() {
 
     // Header data to input sale
@@ -280,7 +427,6 @@ function registerSale() {
 
 }
 
-// Trying to print converting on a pdf
 function printReceipt() {
 
             // Creating a copy of receipt then printing
@@ -364,7 +510,7 @@ function cleanForm() {
 
     if (itemsForm.children.length > 1) {
         while (itemsForm.children.length > 1) {
-            itemsForm.removeChild(itemsForm.lastChild)
+            itemsForm.removeChild(itemsForm.Child)
             }
         }
     document.getElementById('itemDescription1').placeholder = 'Item Description'
