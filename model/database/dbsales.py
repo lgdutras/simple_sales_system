@@ -16,18 +16,6 @@ class Costumers(sss_database):
     admission_date = Column(Date)
     active_status = Column(String(1))
 
-class Sales(sss_database):
-    __tablename__ = 'vi_sales'
-    sale_id = Column(Integer, primary_key=True)
-    datetime = Column(DateTime, primary_key=True, nullable=True)
-    seller_registry = Column(Integer, primary_key=True)
-    seller_store = Column(Integer)
-    costumer_registry = Column(Integer, primary_key=True)
-    costumer_store = Column(Integer)
-    item_id = Column(Integer, primary_key=True)
-    quantity = Column(Integer)
-    unit_price = Column(DECIMAL(5,2))
-
 class Items(sss_database):
     __tablename__ = 'vi_items'
     barcode = Column(String, primary_key=True)
@@ -47,9 +35,10 @@ class Receipts(sss_database):
     receipt_status = Column(String(1))
 
 
-class Recepit_Products(sss_database):
+class Receipt_Products(sss_database):
     __tablename__ = 'vi_receipt_products'
     receipt_id = Column(Integer)
+    datetime = Column(DateTime, autoincrement=True)
     item_id = Column(Integer, primary_key=True)
     quantity = Column(Integer)
     unit_price = Column(DECIMAL(5,2))

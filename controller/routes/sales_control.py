@@ -1,5 +1,5 @@
 from flask import request, session, render_template, Blueprint, jsonify, url_for, redirect, abort
-from model.database.dbsales import engine, Session, Costumers, Sales, Items, Receipts, Recepit_Products, update, func
+from model.database.dbsales import engine, Session, Costumers, Items, Receipts, Receipt_Products, update, func
 import json
 from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
@@ -53,31 +53,8 @@ def get_item():
     else:
         return abort(400, 'Invalid Barcode')
 
-@BP_register_sales.route('/sales/register/setPrint', methods=['Post', 'Get'])
-def set_print():
-        
-        # Requesting sale data to assembly 
-        sale_data = request.get_json()
-        header_data = json.loads(sale_data['header'])
-        # Set Header to input on database
-        costumerRegistry = header_data['costumerRegistry']
-        costumerStore = header_data['costumerStore']
-        # Get items to input on database
-        items_data = json.loads(sale_data['items'])
-
-        # Getting from database the last sale ID to incremment then define next
-        session_SaleID = Session()
-        lastSale = session_SaleID.query(Sales).order_by(Sales.sale_id.desc()).first().sale_id
-        newSaleID = int(lastSale) + 1
-        print(newSaleID)
-        header_data.update({'saleID': newSaleID})
-        sale_data = json.dumps({'header': header_data,
-                                'items':items_data})
-        print(sale_data)
-        return jsonify(sale_data)
-
-@BP_register_sales.route('/sales/register/registerSale', methods=['Post'])
-def registerSale():
+@BP_register_sales.route('/sales/register/closeReceipt', methods=['Post'])
+def closeReceipt():
     # Get full sale data
     sale_data = request.get_json()
 
@@ -87,38 +64,22 @@ def registerSale():
     costumerStore = header_data['costumerStore']
     costumerName = header_data['costumerName']
     costumerCPF = header_data['costumerCPF']
+    receipt_id = header_data['receipt_id']
     
     # Get items to input on database
     items_data = json.loads(sale_data['items'])
 
-    session_SaleID = Session()
-    lastSale = session_SaleID.query(Sales).order_by(Sales.sale_id.desc()).first()
-    newSaleID = lastSale.sale_id + 1
-    session_SaleID.close
+    session_closeReceipt = Session()
 
-    for item in items_data.items():
-        session_sale = Session()
-        new_item = Sales(
-                        sale_id = int(newSaleID),
-                        seller_registry = int(session.get('user_registry')),
-                        seller_store = int(session.get('user_store')),
-                        costumer_registry = int(costumerRegistry),
-                        costumer_store = int(costumerStore),
-                        item_id = int(item[1]['barcode']),
-                        quantity = int(item[1]['quantity']),
-                        unit_price = float(item[1]['price'])
-                        )
-        session_sale.add(new_item)
-        session_sale.commit()
-        session_sale.close()
+    updateReceipt = update(Receipts).where(Receipts.receipt_id == receipt_id).values(receipt_status = '2', datetime = func.to_date(datetime.now().strftime('%d/%m/%Y %H:%M:%S'), 'DD/MM/YYYY HH24:MI:SS') )
+    session_closeReceipt.execute(updateReceipt)
+    session_closeReceipt.commit()
 
-    session_sale = Session()
-
-    sale_datetime = session_sale.query(Sales).filter_by(sale_id=newSaleID, seller_registry=int(session.get('user_registry'))).first().datetime.strftime('%d/%m/%Y %H:%M:%S')
+    sale_datetime = session_closeReceipt.query(Receipts).get(receipt_id).datetime.strftime('%d/%m/%Y %H:%M:%S')
     seller_name = session.get('firstname') + ' ' + session.get('lastname')
     sale_status = 'This sale was registered sucessfully!'
     return jsonify({'status': sale_status,
-                    'sale_id': newSaleID,
+                    'receipt_id': receipt_id,
                     'seller_name': str(seller_name),
                     'sale_store': session.get('user_store'),
                     'datetime': sale_datetime,
@@ -204,28 +165,30 @@ def holdItem():
     item = request.get_json()
     receipt_id = int(item['receipt_id'])
     barcode = int(item['barcode'])
-    quantity = int(item['quantity'])
-    price = int(item['price'])
+    quantity = float(item['quantity'])
+    price = float(item['price'])
 
     if item:
 
         sessionHoldItem = Session()
-        checkItemExists = sessionHoldItem.query(Recepit_Products).filter(Recepit_Products.item_id == barcode, Recepit_Products.receipt_id == barcode).first()
+
+        checkItemExists = sessionHoldItem.query(Receipt_Products).filter(Receipt_Products.item_id == barcode, Receipt_Products.receipt_id == receipt_id).first()
         receiptStatus = sessionHoldItem.query(Receipts).get(receipt_id).receipt_status
-        
         if receiptStatus == str(1):
             if checkItemExists:
                 #Update quantity and price on item
-                checkItemExists.quantity = quantity
-                checkItemExists.unit_price = price
+
+                updateItem = update(Receipt_Products).where(Receipt_Products.item_id == barcode, Receipt_Products.receipt_id == receipt_id).values(quantity = quantity, unit_price = price, datetime = func.to_date(datetime.now().strftime('%d/%m/%Y %H:%M:%S'), 'DD/MM/YYYY HH24:MI:SS'))
+                sessionHoldItem.execute(updateItem)
                 sessionHoldItem.commit()
                 return jsonify({
-                    'itemAdded': 'yes'
+                    'itemUpdated': 'yes'
                     })
             else:
                 # Declare a new item on Receipt_Products class to input on database
-                newItem = Recepit_Products(
+                newItem = Receipt_Products(
                     receipt_id = receipt_id,
+                    datetime = func.to_date(datetime.now().strftime('%d/%m/%Y %H:%M:%S'), 'DD/MM/YYYY HH24:MI:SS'),
                     item_id = barcode,
                     quantity = quantity,
                     unit_price = price
@@ -243,17 +206,17 @@ def holdItem():
 
 @BP_register_sales.route('/sales/register/removeItem', methods=['Post'])
 def removeItem():
-    print('Activated')
     deletionItem = request.get_json()
     barcodeDel = deletionItem['barcode']
     receipt_idDel = deletionItem['receipt_id']
 
     try:
         sessionDelete = Session()
-        itemToDelete = sessionDelete.query(Recepit_Products).filter(item_id = barcodeDel,
-                                                                    receipt_id = receipt_idDel)
+        itemToDelete = sessionDelete.query(Receipt_Products).filter(Receipt_Products.item_id == barcodeDel, Receipt_Products.receipt_id == receipt_idDel)
         itemToDelete.delete()
         sessionDelete.commit()
+
+        return jsonify({'message': f'Item {barcodeDel} deleted from receipt {receipt_idDel}.'})
 
     except SQLAlchemyError as e:
         error = str(e)

@@ -21,7 +21,7 @@ function addItem() { // Add Items
         <input type="number" name="price${itemCounter}" id="price${itemCounter}" placeholder="Price Ex. 5.99" class="form-control mr-1 col-sm-2" required disabled>
         <button type="button" name="lock${itemCounter}" id="lock${itemCounter}" class="btn btn-primary form-control pt-2 mr-1" onclick="LockUnlockItem(${itemCounter})">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
-            <path id='icoLock1' value="unlocked" d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2"/>
+            <path id='icoLock${itemCounter}' value="unlocked" d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2"/>
         </svg>
     </button>
     
@@ -41,13 +41,14 @@ function addItem() { // Add Items
 }
 
 function removeItem(item) {
+    console.log('removing item '+item)
     const dynamicFields = document.getElementById("items");
     const itemToRemove = document.getElementById("item"+item)
 
-    let barcode = document.getElementById('barcode'+item)
+    barcodeDel = document.getElementById('barcode'+item).value
 
     xhr = new XMLHttpRequest()
-    xhr.open('POST', 'sales/register/removeItem')
+    xhr.open('POST', '/sales/register/removeItem')
     xhr.setRequestHeader('Content-Type', 'application/json')
 
     xhr.onreadystatechange = function() {
@@ -55,21 +56,18 @@ function removeItem(item) {
         if (xhr.readyState == 4 && xhr.status == 200) {
 
             response = JSON.parse(xhr.responseText)
-
+            if (itemToRemove) {
+                dynamicFields.removeChild(itemToRemove);
+            }
         }
-
-        deletionItem = JSON.stringify({
-            'barcode': barcode,
-            'receipt_id': receipt_id
-        })
-
-        xhr.send(barcode)
     }
 
+    deletionItem = JSON.stringify({
+        'barcode': barcodeDel,
+        'receipt_id': receipt_id
+    })
+    xhr.send(deletionItem)
 
-    if (itemToRemove) {
-        dynamicFields.removeChild(itemToRemove);
-    }
 }
 
 function getCostumer() {
@@ -224,22 +222,25 @@ function holdItem(item) {
 
 function LockUnlockItem(item) {
 
+    row_id = item
     unlockedIco = "M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2"
     lockedIco = "M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"
 
-    lockIco = document.getElementById('icoLock1')
+    lockIco = document.getElementById('icoLock'+row_id)
+    lockBtn = document.getElementById('lock'+row_id)
     icoPath = lockIco.getAttribute('d')
     icoValue = lockIco.getAttribute('value')
     
     // Fields to manage
-    barcode = document.getElementById('barcode'+item)
-    quantity = document.getElementById('quantity'+item)
-    price = document.getElementById('price'+item)
+    barcode = document.getElementById('barcode'+row_id)
+    quantity = document.getElementById('quantity'+row_id)
+    price = document.getElementById('price'+row_id)
 
 
     if (icoValue == 'unlocked') {
         // Set locked then change ico
         lockIco.setAttribute("value", "locked")
+        lockBtn.setAttribute("value", "locked")
         lockIco.setAttribute("d", lockedIco)
 
         // Call hold items to register item on database in a opened receipt or update the current value
@@ -256,6 +257,7 @@ function LockUnlockItem(item) {
 
         // Set locked then change ico
         lockIco.setAttribute("value", "unlocked")
+        lockBtn.setAttribute("value", "unlocked")
         lockIco.setAttribute("d", unlockedIco)
 
         // Unlock Fields
@@ -270,6 +272,7 @@ function LockUnlockItem(item) {
 function validFields() {
     const form = document.getElementById("saleForm");
     const inputs = form.querySelectorAll("input");
+    const buttons = form.querySelectorAll("button")
     const ps = form.querySelectorAll("p")
 
     let costumerNameValue = document.getElementById('costumerName').value
@@ -279,44 +282,59 @@ function validFields() {
     let priceValue;
     let lockValue;
     let allFieldsFilled = true;
+    let allFieldsLocked = true;
 
     if (costumerNameValue) {
-           
-        inputs.forEach((input) => {
-            switch (input.name) {
-                case input.name.startsWith("barcode"):
-                    barcodeValue = input.value;
-                    break;
-                case input.name.startsWith("itemDescription"):
-                    itemDescriptionValue = input.value;
-                    break;
-                case input.name.startsWith("quantity"):
-                    quantityValue = input.value;
-                    break;
-                case input.name.startsWith("price"):
-                    priceValue = input.value;
-                    break;
-                case input.name.startsWith("lock"):
-                    lockValue = 'unlock'
-
+          
+        buttons.forEach((button) => {
+            if (button.id.startsWith('lock')) {
+                if(button.value == 'locked') {
+                    // Do nothing
+                } else {
+                    // Set validation false
+                    allFieldsLocked = false
+                }
             }
-            if (input.required && !input.value.trim()) {
-                allFieldsFilled = false;
-                console.log(input.value)
-            }
-        });
+        })
 
-        if (!allFieldsFilled) {
-            alert("Please, fill all required fields.");
-            return;
+        if (allFieldsLocked == true) {
+            inputs.forEach((input) => {
+                switch (input.name) {
+                    case input.name.startsWith("barcode"):
+                        barcodeValue = input.value;
+                        break;
+                    case input.name.startsWith("itemDescription"):
+                        itemDescriptionValue = input.value;
+                        break;
+                    case input.name.startsWith("quantity"):
+                        quantityValue = input.value;
+                        break;
+                    case input.name.startsWith("price"):
+                        priceValue = input.value;
+                        break;
+
+                }
+                if (input.required && !input.value.trim()) {
+                    allFieldsFilled = false;
+                    console.log(input.value)
+                }
+            });
+
+            if (!allFieldsFilled) {
+                alert("Please, fill all required fields.");
+                return;
+            } else {
+                registerSale()
+            }
         } else {
-            //registerSale()
+            alert("Lock all fields to complete the sale");
+            return;
         }
 
-} else {
-    alert("Set a costumer to complete the sale!");
-    return;
-}
+    } else {
+        alert("Set a costumer to complete the sale!");
+        return;
+    }
 }
      
 function registerSale() {
@@ -328,6 +346,7 @@ function registerSale() {
     let formData_costumerStore = costumer_store
 
     header_data = {
+        'receipt_id': receipt_id,
         'costumerRegistry': formData_costumerRegistry,
         'costumerName': formData_costumerName,
         'costumerCPF': formData_cpf,
@@ -337,8 +356,7 @@ function registerSale() {
     // Items data to input sale
     itemsDiv = document.getElementById('items')
 
-    items_data = { // create a json to populate it with form data to send to backend
-    }
+    items_data = { } // create a json to populate it with form data to send to backend
 
     for (let itemNumber = 0; itemNumber < itemsDiv.children.length; itemNumber++) {
         // This loop will populate the json items_data with the values of each form filed on each item div that exists on items div
@@ -363,10 +381,10 @@ function registerSale() {
 
         items_data[item] = itemAppend
 
-    } // Sending the sale data to register on database and retrieving sale_id
+    } // Sending the sale data to register on database and retrieving receipt_id
         xhr = new XMLHttpRequest();
 
-        xhr.open('POST', '/sales/register/registerSale', true);
+        xhr.open('POST', '/sales/register/closeReceipt', true);
         xhr.setRequestHeader('Content-Type', 'application/json')
 
         xhr.onreadystatechange = function () {
@@ -374,10 +392,11 @@ function registerSale() {
             response = JSON.parse(xhr.responseText);
             PDFContainer = document.getElementById("receiptContainer");
             PDFContainer.style.visibility = "visible";
+
             // Sending header data to receipt the sale data to create a pdf
             document.getElementById('RsaleStore').innerText = response.sale_store
             document.getElementById('RsellerName').innerText = response.seller_name
-            document.getElementById('RsaleId').innerText = response.sale_id
+            document.getElementById('RsaleId').innerText = response.receipt_id
             document.getElementById('RsaleDate').innerText = response.datetime
 
             document.getElementById('RcostumerRegistry').innerText = response.costumer_registry
@@ -424,7 +443,6 @@ function registerSale() {
         })
         xhr.send(sale_data);
         setTimeout(printReceipt, 1000);
-
 }
 
 function printReceipt() {
