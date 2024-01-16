@@ -39,7 +39,7 @@
         </div>
         <form id="saleForm" class="container align-items-center justify-content-center mt-3" method="post">
             <!-- Fixed fields: User Registry and Item -->
-            <div id="form-header" class="container form-inline row justify-content-center mb-1">
+            <div id="form-header" class="container form-inline row justify-content-center mb-1 m-0">
                 <input hidden name="itemCounter" id="itemCounter" value="1">
                 <input type="text" name="costumerRegistry" id="costumerRegistry" palceholder="Costumer Registry" class="form-control col-1 mr-1" onchange="getCostumer()" required>
                 <input id="costumerName" placeholder="Costumer Name" class="form-control col-sm mr-1" style="max-width: 60%"required disabled>
@@ -50,6 +50,7 @@
                 <div id="item1" class="form-row d-inline-flex row my-1">
                         <input type="text" name="barcode1" id="barcode1" placeholder="Barcode" class="form-control mr-1 col-sm-2" onchange="getItem('1')" required>
                         <input id="itemDescription1" placeholder="Item Description" class="form-control mr-1 col-md" required disabled>
+
                         <input type="number" name="quantity1" id="quantity1" placeholder="Quantity" class="form-control mr-1 col-sm-2" required disabled>
                         <input type="number" name="price1" id="price1" placeholder="Price Ex. 5.99" class="form-control mr-1 col-sm-2" required disabled>
                         

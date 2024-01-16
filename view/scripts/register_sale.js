@@ -528,7 +528,7 @@ function cleanForm() {
 
     if (itemsForm.children.length > 1) {
         while (itemsForm.children.length > 1) {
-            itemsForm.removeChild(itemsForm.Child)
+            itemsForm.removeChild(itemsForm.lastChild)
             }
         }
     document.getElementById('itemDescription1').placeholder = 'Item Description'
