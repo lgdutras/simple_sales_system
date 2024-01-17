@@ -6,6 +6,30 @@
     <title>Register Sale</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{url_for('static', filename='style/register_sale.css')}}">
+
+<style>
+
+@media (min-width: 800px) {
+  #itemDescription1 {min-width: 411px !important;}
+  #submitBtn, #resetBtn{min-width:200px;text-transform:uppercase;font-weight:600;}
+}
+
+#saleFormContent{
+	border-radius: 20px;
+    border: 1px solid #fff;
+    box-shadow: 0px 0px 10px 0px #ccc;
+    padding: 3px !important;
+}
+
+#loginHeader{
+	border-top-left-radius: 12px; 
+	border-top-right-radius: 12px; 
+	position: relative; 
+	padding-bottom: 0.3em;	
+}
+
+</style>
+
 </head>
 <body>
     <!-- Navbar Content -->
@@ -32,29 +56,29 @@
         </ul>
     </nav>
 
-    <div id="saleFormContent" class="h-100 w-100 p-0 pb-2 container align-items-center justify-content-center mt-5 bg-white" style="border-top-left-radius: 12px; border-top-right-radius: 12px;">
+    <div id="saleFormContent" class="h-100 w-100 p-0 container align-items-center justify-content-center mt-5 bg-white">
         
-        <div id='loginHeader' class='bg-dark text-white container align-items-center justify-content-center m-0' style="border-top-left-radius: 12px; border-top-right-radius: 12px; position: relative; padding-bottom: 0.3em">
+        <div id='loginHeader' class='bg-dark text-white container align-items-center justify-content-center m-0'>
             <h1 id="TitleHead" class="h1 font-weight-light monospace text-center m-0">Register Sale</h1>
         </div>
-        <form id="saleForm" class="container align-items-center justify-content-center mt-3" method="post">
+        <form id="saleForm" class="container align-items-center justify-content-center mt-3" method="post" style="padding:0px 0px 0px 0px;">
             <!-- Fixed fields: User Registry and Item -->
-            <div id="form-header" class="container form-inline row justify-content-center mb-1 m-0">
+            <div id="form-header" class="container form-inline row justify-content-center mb-1 m-0" style="padding:0;">
                 <input hidden name="itemCounter" id="itemCounter" value="1">
-                <input type="text" name="costumerRegistry" id="costumerRegistry" palceholder="Costumer Registry" class="form-control col-1 mr-1" onchange="getCostumer()" required>
-                <input id="costumerName" placeholder="Costumer Name" class="form-control col-sm mr-1" style="max-width: 60%"required disabled>
-                <button type="button" class="btn btn-primary mr-1" onclick="addItem()">Add Item</button>
+                <input type="text" name="costumerRegistry" id="costumerRegistry" palceholder="Costumer Registry" style="max-width: 15%" class="form-control col-1 mr-1" onchange="getCostumer()" required>
+                <input id="costumerName" placeholder="Costumer Name" class="form-control col-md mr-1" style="max-width: 80%" required disabled>
+                <button type="button" class="btn btn-primary mr-1" onclick="addItem()"  style="max-width: 10%">Add Item</button>
             </div>
 
             <div id="items" class="form-inline container align-items-center justify-content-center border border-1 rounded p-1 my-2 bg-white">
                 <div id="item1" class="form-row d-inline-flex row my-1">
-                        <input type="text" name="barcode1" id="barcode1" placeholder="Barcode" class="form-control mr-1 col-sm-2" onchange="getItem('1')" required>
+                        <input type="text" name="barcode1" id="barcode1" placeholder="Barcode" class="form-control mr-1 col-md-2" onchange="getItem('1')" required>
                         <input id="itemDescription1" placeholder="Item Description" class="form-control mr-1 col-md" required disabled>
 
-                        <input type="number" name="quantity1" id="quantity1" placeholder="Quantity" class="form-control mr-1 col-sm-2" required disabled>
-                        <input type="number" name="price1" id="price1" placeholder="Price Ex. 5.99" class="form-control mr-1 col-sm-2" required disabled>
+                        <input type="number" name="quantity1" id="quantity1" placeholder="Quantity" class="form-control mr-1 col-md-2" required disabled>
+                        <input type="number" name="price1" id="price1" placeholder="Price Ex. 5.99" class="form-control mr-1 col-md-2" required disabled>
                         
-                        <button type="button" name="lock1" id="lock1" value="unlocked" class="btn btn-primary form-control pt-2 mr-1" onclick="LockUnlockItem(1)">
+                        <button type="button" name="lock1" id="lock1" value="unlocked" class="btn btn-info form-control pt-2 mr-1" onclick="LockUnlockItem(1)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
                                 <path id='icoLock1' value="unlocked" d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2"/>
                             </svg>
@@ -73,12 +97,18 @@
             
                 -->
             </div>
+		 <div id='loginFooter' class='text-white container align-items-center justify-content-center mt-3 py-1' style="border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; position: relative; padding-bottom: 0.3em; background-color:#f0f0f0;border:1px solid #ccc;">
             <div id="buttonsDiv" class="container center form-inline padding receipt_container align-items-center justify-content-center">
                 <button type="button" id="submitBtn" class="btn btn-success mr-1" onclick="validFields()">Submit</button>
                 <button type="reset" id="resetBtn" class="btn btn-warning" onclick="cleanForm()">Reset</button>
             </div>
+		</div>
+            
         </form>
+		
+		
     </div>
+	
     <div id="receiptContainer" class="container p-1 border border-1 bg-white" style="visibility: collapse;">
         <div id="receipt" name="receipt" class="receipt_container">
             <div class="header">

@@ -3,3 +3,7 @@ __pycache__/
 
 # Ignore database configuration file
 dbconfig.py
+
+*.bak
+.bak
+nppBackup

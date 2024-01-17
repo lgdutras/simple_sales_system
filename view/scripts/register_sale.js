@@ -241,6 +241,7 @@ function LockUnlockItem(item) {
         // Set locked then change ico
         lockIco.setAttribute("value", "locked")
         lockBtn.setAttribute("value", "locked")
+        lockBtn.setAttribute("value", "locked")
         lockIco.setAttribute("d", lockedIco)
 
         // Call hold items to register item on database in a opened receipt or update the current value
@@ -250,11 +251,11 @@ function LockUnlockItem(item) {
         barcode.disabled =  true
         quantity.disabled = true
         price.disabled = true
+		lockBtn.classList.remove("btn-info");
+		lockBtn.classList.add("btn-secondary");
 
     } else {
-        // Unlock can be use tu adjust the ammount of item or price. To remove a item, user must remove the line, what will result in a deletion of the item on database
-
-
+     
         // Set locked then change ico
         lockIco.setAttribute("value", "unlocked")
         lockBtn.setAttribute("value", "unlocked")
@@ -263,10 +264,11 @@ function LockUnlockItem(item) {
         // Unlock Fields
         barcode.disabled =  false
         quantity.disabled = false
-        price.disabled = false
+        price.disabled = false	
+		
+		lockBtn.classList.remove("btn-secondary");
+		lockBtn.classList.add("btn-info");
     }
-
-    
 }
 
 function validFields() {
