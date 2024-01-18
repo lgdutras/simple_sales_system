@@ -14,12 +14,12 @@ function addItem() { // Add Items
 
     const dynamicFields = document.getElementById("items");
     const newItem = `
-    <div id="item${itemCounter}" class="form-row d-inline-flex row mb-1">
-        <input type="text" name="barcode${itemCounter}" id="barcode${itemCounter}" placeholder="Barcode" class="form-control mr-1 col-sm-2" onchange= "getItem('${itemCounter}')" required>
-        <input id="itemDescription${itemCounter}" placeholder="Item Description" class="form-control mr-1 col-md" required disabled></p>
-        <input type="number" name="quantity${itemCounter}" id="quantity${itemCounter}" placeholder="Quantity" class="form-control mr-1 col-sm-2" required disabled>
-        <input type="number" name="price${itemCounter}" id="price${itemCounter}" placeholder="Price Ex. 5.99" class="form-control mr-1 col-sm-2" required disabled>
-        <button type="button" name="lock${itemCounter}" id="lock${itemCounter}" class="btn btn-primary form-control pt-2 mr-1" onclick="LockUnlockItem(${itemCounter})">
+    <div id="item${itemCounter}" class="form-row d-inline-flex row my-1">
+        <input type="text" name="barcode${itemCounter}" id="barcode${itemCounter}" placeholder="Barcode" class="form-control mr-1 col-md-2" onchange= "getItem('${itemCounter}')" required>
+        <input id="itemDescription${itemCounter}" placeholder="Item Description" class="form-control mr-1 col-md" required disabled>
+        <input type="number" name="quantity${itemCounter}" id="quantity${itemCounter}" placeholder="Quantity" class="form-control mr-1 col-md-2" required disabled>
+        <input type="number" name="price${itemCounter}" id="price${itemCounter}" placeholder="Price Ex. 5.99" class="form-control mr-1 col-md-2" required disabled>
+        <button type="button" name="lock${itemCounter}" id="lock${itemCounter}" class="btn btn-info form-control pt-2 mr-1" onclick="LockUnlockItem(${itemCounter})">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
             <path id='icoLock${itemCounter}' value="unlocked" d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2"/>
         </svg>
@@ -407,10 +407,17 @@ function registerSale() {
             document.getElementById('RcostumerStore').innerText = response.costumer_store
             }
 
+            receipt_id = ''
+
         }
 
         // Cleaning all rows from table
         rows = document.getElementById('itemsPDF');
+        receiptContainer = document.getElementById('receiptContainer')
+        
+        if (receiptContainer.style == 'collapse') {
+            receiptContainer.style = 'visible';
+        }
 
         while (rows.firstChild) {
             rows.removeChild(rows.firstChild)
@@ -524,6 +531,11 @@ function cleanForm() {
             </tbody>
         </table>
     </div>
+
+    <div id="footer" class="footer">
+        <p class="header_item">Customer Signature: ___________________________</p>
+        <p class="header_item">Total Value of Purchase: $<span id="totalValue">00.00</span></p>
+    </div>
     `
     receiptContainer.style.visibility = 'collapse'
     itemsForm = document.getElementById('items')
@@ -533,11 +545,11 @@ function cleanForm() {
             itemsForm.removeChild(itemsForm.lastChild)
             }
         }
+    LockUnlockItem(1)
     document.getElementById('itemDescription1').placeholder = 'Item Description'
     document.getElementById('quantity1').placeholder = ''
     document.getElementById('price1').placeholder = ''
     document.getElementById('costumerName').placeholder = 'Costumer Name'
+    
     itemCounter = 2
-
-    receiptContainer.removeChild(receiptContainer.lastChild)
 }
