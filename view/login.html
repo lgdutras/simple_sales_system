@@ -5,14 +5,15 @@
         <link rel='stylesheet' href="{{url_for('static', filename='style/login.css')}}">
     </head>
     <body class='h-100 w-100 d-flex align-items-center container justify-content-center'>
-            <div id='LoginBox' class='bg-light bg-gradient justify-content-center' style="border-radius: 12px; width: 100%;">
+            <div id='LoginBox' class='bg-light bg-gradient justify-content-center text-center' style="border-radius: 12px; width: 100%;">
 
                 <div id='loginHeader' class='bg-dark text-white' style="border-top-left-radius: 12px; border-top-right-radius: 12px; position: relative; padding-bottom: 0.3em">
                     <h1 id="EnterpriseName" class='h1 font-weight-light monospace text-center m-0' style="font-size: 2em;">
                         Enterprise Name
                     </h1>
                 </div>
-                <div id='LoginForm' class="m-5 pb-5">
+                <div id='LoginForm' class="m-5 pb-1">
+                    <p>{{message}}</p>
                     <form method='POST' class="mb-2">
                         <div id="UserGroup" class="input-group">
                             <span id='user-ico' class="input-group-text mb-2" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">
@@ -37,6 +38,7 @@
                         </button>
                     </form>
                 </div>
+                <a href="{{url_for('login.signin')}}" class="text-dark">Create a new user</a>
                 </div>
             </div>
     </body>

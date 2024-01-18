@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{url_for('static', filename='style/register_sale.css')}}">
 </head>
-<body >
+<body>
     <!-- Navbar Content -->
     <nav class="navbar navbar-dark bg-dark bg-gradient">
         <a class="navbar-brand" href="{{ url_for('home.homepage') }}">Entreprise Name</a>
@@ -31,6 +31,10 @@
             </li>
         </ul>
     </nav>
+
+    <h1 class="text-dark ml-2">
+        Welcome, {{session['firstname']}}
+    </h1>
 
     <!-- Bootstrap JS and dependencies (jQuery and Popper.js) -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
