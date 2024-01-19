@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, Blueprint, abort, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, Blueprint, abort, jsonify, flash
 from secrets import token_hex
 from flask_sqlalchemy import SQLAlchemy
 from model.database.dblogin import engine, Session, User
@@ -12,7 +12,7 @@ BP_login.secret_key = token_hex(64)
 @BP_login.route('/login', methods = ['Post', 'Get'])
 def login():
     if request.method == 'POST':
-        form_username = request.form['username'].upper()
+        form_username = str(request.form['username'].upper())
         form_password = str(request.form['pw']).encode('utf-8')
         session_login = Session()
         user_data_validation = session_login.query(User).filter_by(username=form_username).first()
@@ -35,25 +35,24 @@ def login():
                 session_login.close
                 return redirect(url_for('home.homepage'))
             else:
-                return render_template('login.html', message='Incorrect password, try again')
+                return render_template('login.html', message='Incorrect password, try again', mt_var=1)
         else:
 
-            return render_template('login.html', message='User not exists, check your username')
+            return render_template('login.html', message='User not exists, check your username', mt_var=1)
 
-    return render_template('login.html')
+    return render_template('login.html', mt_var=5)
 
 @BP_login.route('/signin', methods = ['Post', 'Get'])
 def signin():
     if request.method == 'POST':
 
-        formUsername = request.form['username']
+        formUsername = request.form['username'].upper()
         formPassword = request.form['pw']
-        formFirstName = request.form['first-name']
-        formLastName = request.form['last-name']
+        formFirstName = request.form['first-name'].title()
+        formLastName = request.form['last-name'].title()
         formUserRegistry = request.form['user-registry']
         formCPF = request.form['user-CPF']
         formStore = request.form['store-id']
-
 
         newUser = User(
             user_registry = formUserRegistry,
@@ -68,18 +67,20 @@ def signin():
 
         try:
             session_signin = Session()
-            session_signin.add(newUser)
-            session_signin.commit()
+            checkUsernameExists = session_signin.query(User).filter_by(username = formUsername).first()
 
-            return jsonify({
-                'message': 'New user requested, wait for administration validation'
-            })
+            if checkUsernameExists:
+                return render_template('signin.html', message='Username already exists, use another username.', msg_class='danger', mt_var=1)
+            
+            else:
+                session_signin.add(newUser)
+                session_signin.commit()
+                return render_template('signin.html', message='User created, wait for admin validation', msg_class='success', mt_var=1)
         
         except SQLAlchemyError as e:
             return abort(500, f"Error on request a new user {e}")
 
-
-    return render_template('signin.html')
+    return render_template('signin.html', mt_var=5)
 
 BP_logout = Blueprint('logout', __name__)
 

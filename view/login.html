@@ -5,15 +5,15 @@
         <link rel='stylesheet' href="{{url_for('static', filename='style/login.css')}}">
     </head>
     <body class='h-100 w-100 d-flex align-items-center container justify-content-center'>
-            <div id='LoginBox' class='bg-light bg-gradient justify-content-center text-center' style="border-radius: 12px; width: 100%;">
+            <div id='LoginBox' class='bg-light justify-content-center text-center pb-1' style="border-radius: 12px; width: 100%;">
 
                 <div id='loginHeader' class='bg-dark text-white' style="border-top-left-radius: 12px; border-top-right-radius: 12px; position: relative; padding-bottom: 0.3em">
                     <h1 id="EnterpriseName" class='h1 font-weight-light monospace text-center m-0' style="font-size: 2em;">
                         Enterprise Name
                     </h1>
                 </div>
-                <div id='LoginForm' class="m-5 pb-1">
-                    <p>{{message}}</p>
+                <p class="text-danger mt-3">{{message}}</p>
+                <div id='LoginForm' class="mx-5 mb-3 mt-{{mt_var}} pb-1">
                     <form method='POST' class="mb-2">
                         <div id="UserGroup" class="input-group">
                             <span id='user-ico' class="input-group-text mb-2" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">
@@ -31,7 +31,7 @@
                                 </span>
                                 <input id='pw' name='pw' type='password' placeholder='password' class='form-control mb-2'>
                             </div>
-                        <button name='login' type='submit' class='btn btn-dark btn-block p-0'>
+                        <button name='login' type='submit' class='btn btn-dark btn-block p-0 mb-2'>
                             <span class="m-0" style="font-size: 1.5em;">
                                 Login
                             </span>

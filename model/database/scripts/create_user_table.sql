@@ -6,5 +6,7 @@ CREATE TABLE estoque.vi_users (
   first_name varchar(25) not null,
   last_name varchar(25) not null,
   username VARCHAR2(25) NOT NULL,
-  password VARCHAR2(255) NOT NULL
+  password VARCHAR2(255) NOT NULL,
+  user_group NUMBER(2) NOT NULL,
+  created_at DATE DEFAULT CURRENT_TIMESTAMP
 );

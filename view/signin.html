@@ -5,14 +5,15 @@
         <link rel='stylesheet' href="{{url_for('static', filename='style/login.css')}}">
     </head>
     <body class='h-100 w-100 d-flex align-items-center container justify-content-center'>
-            <div id='signinBox' class='bg-light bg-gradient justify-content-center' style="border-radius: 12px; width: 100%;">
+            <div id='signinBox' class='bg-light bg-gradient justify-content-center pb-1 text-center' style="border-radius: 12px; width: 100%;">
 
                 <div id='signinHeader' class='bg-dark text-white' style="border-top-left-radius: 12px; border-top-right-radius: 12px; position: relative; padding-bottom: 0.3em">
                     <h1 id="SignIn" class='h1 font-weight-light monospace text-center m-0' style="font-size: 2em;">
                         Request a new user
                     </h1>
                 </div>
-                <div id='SigninForm' class="m-5 pb-5">
+                <p class="text-{{msg_class}} text-center mt-3">{{message}}</p>
+                <div id='SigninForm' class="mx-5 mb-2 mt-{{mt_var}} pb-3">
                     <form method='POST' class="mb-2">
                         <div id="NameGroup" class="input-group">
                             <span id="name-ico" class="input-group-text mb-2" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">
@@ -33,7 +34,7 @@
                                 </svg>
                             </span>
                             <input id="user-registry" name="user-registry" type="text" placeholder="User Registry: 0000" class='form-control mb-2'>
-                            <input id="user-CPF" name="user-CPF" type="text" placeholder="CPF: 000.000.000-00" class='form-control mb-2'>
+                            <input id="user-CPF" name="user-CPF" type="text" maxlength="11" placeholder="CPF: 00000000000" class='form-control mb-2'>
                         </div>
 
                         <div id="StoreGroup" class="input-group">
@@ -78,6 +79,7 @@
                         </button>
                     </form>
                 </div>
+                <a href="{{url_for('login.login')}}" class="text-dark">Log in</a>
                 </div>
             </div>
     </body>

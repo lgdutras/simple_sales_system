@@ -24,4 +24,4 @@ def index():
         return redirect(url_for('login.login'))
     
 if __name__ == '__main__':
-    app.run(host='192.168.60.60', port='5000')
+    app.run()
