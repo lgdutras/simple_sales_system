@@ -42,7 +42,7 @@
             <!-- Fixed fields: User Registry and Item -->
             <div id="form-header" class="container form-inline row justify-content-center mb-1 m-0" style="padding:0;">
                 <input hidden name="itemCounter" id="itemCounter" value="1">
-                <input type="text" name="costumerRegistry" id="costumerRegistry" palceholder="Costumer Registry" style="max-width: 15%" class="form-control col-1 mr-1" onchange="getCostumer()" required>
+                <input type="number" name="costumerRegistry" id="costumerRegistry" placeholder="Costumer Registry" style="max-width: 15%" class="form-control col-1 mr-1" onchange="getCostumer()" required>
                 <input id="costumerName" placeholder="Costumer Name" class="form-control col-md mr-1" style="max-width: 80%" required disabled>
                 <button type="button" class="btn btn-primary mr-1" onclick="addItem()"  style="max-width: 10%">Add Item</button>
             </div>
@@ -52,7 +52,7 @@
                         <input type="text" name="barcode1" id="barcode1" placeholder="Barcode" class="form-control mr-1 col-md-2" onchange="getItem('1')" required>
                         <input id="itemDescription1" placeholder="Item Description" class="form-control mr-1 col-md" required disabled>
 
-                        <input type="number" name="quantity1" id="quantity1" placeholder="Quantity" class="form-control mr-1 col-md-2" required disabled>
+                        <input type="text" name="quantity1" id="quantity1" placeholder="Quantity" class="form-control mr-1 col-md-2" onkeyup="lockDecimals(1)" required disabled>
                         <input type="number" name="price1" id="price1" placeholder="Price Ex. 5.99" class="form-control mr-1 col-md-2" required disabled>
                         
                         <button type="button" name="lock1" id="lock1" value="unlocked" class="btn btn-info form-control pt-2 mr-1" onclick="LockUnlockItem(1)">
@@ -61,7 +61,7 @@
                             </svg>
                         </button>
                         
-                        <button type="button" class="btn btn-danger form-control pt-2" onclick="removeItem(1)" >
+                        <button type="button" class="btn btn-danger form-control pt-2" onclick="removeItem(1)">
                             <span id='pass-ico' class='mb-0'>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                     <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
@@ -76,8 +76,9 @@
             </div>
 		 <div id='loginFooter' class='text-white container align-items-center justify-content-center mt-3 py-1' style="border-bottom-left-radius: 12px; border-bottom-right-radius: 12px; position: relative; padding-bottom: 0.3em; background-color:#f0f0f0;border:1px solid #ccc;">
             <div id="buttonsDiv" class="container center form-inline padding receipt_container align-items-center justify-content-center">
+                
                 <button type="button" id="submitBtn" class="btn btn-success mr-1" onclick="validFields()">Submit</button>
-                <button type="reset" id="resetBtn" class="btn btn-warning" onclick="cleanForm()">Reset</button>
+                <button type="reset" id="resetBtn" class="btn btn-warning" onclick="resetAll()">Reset</button>
             </div>
 		</div>
             

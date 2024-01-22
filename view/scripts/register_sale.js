@@ -15,9 +15,9 @@ function addItem() { // Add Items
     const dynamicFields = document.getElementById("items");
     const newItem = `
     <div id="item${itemCounter}" class="form-row d-inline-flex row my-1">
-        <input type="text" name="barcode${itemCounter}" id="barcode${itemCounter}" placeholder="Barcode" class="form-control mr-1 col-md-2" onchange= "getItem('${itemCounter}')" required>
+        <input type="text" name="barcode${itemCounter}" id="barcode${itemCounter}" placeholder="Barcode" class="form-control mr-1 col-md-2" onchange="getItem('${itemCounter}')" required>
         <input id="itemDescription${itemCounter}" placeholder="Item Description" class="form-control mr-1 col-md" required disabled>
-        <input type="number" name="quantity${itemCounter}" id="quantity${itemCounter}" placeholder="Quantity" class="form-control mr-1 col-md-2" required disabled>
+        <input type="text" name="quantity${itemCounter}" id="quantity${itemCounter}" placeholder="Quantity" class="form-control mr-1 col-md-2" onkeyup="lockDecimals(${itemCounter})" required disabled>
         <input type="number" name="price${itemCounter}" id="price${itemCounter}" placeholder="Price Ex. 5.99" class="form-control mr-1 col-md-2" required disabled>
         <button type="button" name="lock${itemCounter}" id="lock${itemCounter}" class="btn btn-info form-control pt-2 mr-1" onclick="LockUnlockItem(${itemCounter})">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
@@ -87,11 +87,14 @@ function getCostumer() {
 
             // Handle the response from the server
             var response = JSON.parse(xhr.responseText);
+
             costumer_cpf = response.costumer_cpf;
             costumer_name = response.costumer_name;
             costumer_store = response.costumer_store;
             costumerNameField.value = costumer_name;
             costumerNameField.placeholder = costumer_name;
+            
+            cleanReceipt()
             openReceipt(user_registry_field)
             
                 } else if (xhr.readyState === 4 && xhr.status === 404) {
@@ -194,6 +197,7 @@ function holdItem(item) {
 
     row_id = item
     barcode = document.getElementById('barcode'+row_id)
+    itemDesc = document.getElementById('itemDescription'+row_id)
     quantity = document.getElementById('quantity'+row_id)
     price = document.getElementById('price'+row_id)
 
@@ -217,57 +221,75 @@ function holdItem(item) {
         'price': price.value
     }
 
-    xhr.send(JSON.stringify(item))
+    if (receipt_id == '') {
+        alert("There's no receipt opened, please, open a receipt before iniciate sale")
+        document.getElementById('costumerRegistry').focus()
+    } else {
+        xhr.send(JSON.stringify(item))
+    }
+    
 }
 
 function LockUnlockItem(item) {
-
-    row_id = item
-    unlockedIco = "M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2"
-    lockedIco = "M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"
-
-    lockIco = document.getElementById('icoLock'+row_id)
-    lockBtn = document.getElementById('lock'+row_id)
-    icoPath = lockIco.getAttribute('d')
-    icoValue = lockIco.getAttribute('value')
     
-    // Fields to manage
-    barcode = document.getElementById('barcode'+row_id)
-    quantity = document.getElementById('quantity'+row_id)
-    price = document.getElementById('price'+row_id)
+    let row_id = item
+    let barcode = document.getElementById('barcode'+row_id)
+    let itemDesc = document.getElementById('itemDescription'+row_id)
+    let quantity = document.getElementById('quantity'+row_id)
+    let price = document.getElementById('price'+row_id)
 
 
-    if (icoValue == 'unlocked') {
-        // Set locked then change ico
-        lockIco.setAttribute("value", "locked")
-        lockBtn.setAttribute("value", "locked")
-        lockBtn.setAttribute("value", "locked")
-        lockIco.setAttribute("d", lockedIco)
-
-        // Call hold items to register item on database in a opened receipt or update the current value
-        holdItem(item)
-
-        // Lock Fields
-        barcode.disabled =  true
-        quantity.disabled = true
-        price.disabled = true
-		lockBtn.classList.remove("btn-info");
-		lockBtn.classList.add("btn-secondary");
-
+    if (itemDesc.placeholder == 'Item Description' || itemDesc.placeholder == 'Invalid Item') {
+        alert('Item not found, please, try a valid item!')
+    } else if (quantity.value == '' || price.value == '' ) {
+        alert('Fill all fields, price or quantity is not filled')
     } else {
-     
-        // Set locked then change ico
-        lockIco.setAttribute("value", "unlocked")
-        lockBtn.setAttribute("value", "unlocked")
-        lockIco.setAttribute("d", unlockedIco)
+        unlockedIco = "M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2"
+        lockedIco = "M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"
 
-        // Unlock Fields
-        barcode.disabled =  false
-        quantity.disabled = false
-        price.disabled = false	
-		
-		lockBtn.classList.remove("btn-secondary");
-		lockBtn.classList.add("btn-info");
+        lockIco = document.getElementById('icoLock'+row_id)
+        lockBtn = document.getElementById('lock'+row_id)
+        icoPath = lockIco.getAttribute('d')
+        icoValue = lockIco.getAttribute('value')
+        
+        // Fields to manage
+        barcode = document.getElementById('barcode'+row_id)
+        quantity = document.getElementById('quantity'+row_id)
+        price = document.getElementById('price'+row_id)
+
+
+        if (icoValue == 'unlocked') {
+            // Set locked then change ico
+            lockIco.setAttribute("value", "locked")
+            lockBtn.setAttribute("value", "locked")
+            lockBtn.setAttribute("value", "locked")
+            lockIco.setAttribute("d", lockedIco)
+
+            // Call hold items to register item on database in a opened receipt or update the current value
+            holdItem(item)
+
+            // Lock Fields
+            barcode.disabled =  true
+            quantity.disabled = true
+            price.disabled = true
+            lockBtn.classList.remove("btn-info");
+            lockBtn.classList.add("btn-secondary");
+
+        } else {
+        
+            // Set locked then change ico
+            lockIco.setAttribute("value", "unlocked")
+            lockBtn.setAttribute("value", "unlocked")
+            lockIco.setAttribute("d", unlockedIco)
+
+            // Unlock Fields
+            barcode.disabled =  false
+            quantity.disabled = false
+            price.disabled = false	
+            
+            lockBtn.classList.remove("btn-secondary");
+            lockBtn.classList.add("btn-info");
+        }
     }
 }
 
@@ -337,6 +359,11 @@ function validFields() {
         alert("Set a costumer to complete the sale!");
         return;
     }
+}
+
+function lockDecimals(item) {
+    field = document.getElementById('quantity'+item)
+    field.value = field.value.replace(/[^0-9]/g, "");
 }
      
 function registerSale() {
@@ -408,12 +435,14 @@ function registerSale() {
             }
 
             receipt_id = ''
-
+            let now = new Date()
+            cleanForm()
         }
 
         // Cleaning all rows from table
         rows = document.getElementById('itemsPDF');
         receiptContainer = document.getElementById('receiptContainer')
+
         
         if (receiptContainer.style == 'collapse') {
             receiptContainer.style = 'visible';
@@ -478,6 +507,8 @@ function printReceipt() {
 
             const contentToPrint = document.getElementById("receiptContainer");
 
+            receiptContainer.remove.lastChild
+
             html2canvas(contentToPrint).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
                 
@@ -491,14 +522,23 @@ function printReceipt() {
                 window.open(fileURL);
                 // To do - Remove the copy of receipt used to print of the user screen
             });
+
 }
 
-function cleanForm() {
+function cleanReceipt() {
     receiptContainer = document.getElementById('receiptContainer')
     receiptContainer.innerHTML = `
     <div id="receipt" name="receipt" class="receipt_container bg-white">
     <div class="header">
-        <h2>Receipt</h2>
+                <div id="title" class="row">
+                    <h2 class="col">Receipt</h2>
+                    <button type="button" id="printBtn" class="btn col-1" id="printSale" onclick="printReceipt()" style="position: relative; align-self: flex-end;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer mt-1" viewBox="0 0 16 16">
+                            <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1"/>
+                            <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1"/>
+                        </svg>
+                    </button>
+                </div>
         <div id="sale_info">
             <p class="header_item">Sale Store: <span id="RsaleStore"></span></p>
             <p class="header_item">Sale ID: <span id="RsaleId"></span></p>
@@ -538,18 +578,51 @@ function cleanForm() {
     </div>
     `
     receiptContainer.style.visibility = 'collapse'
+}
+
+function cleanForm() {
+
     itemsForm = document.getElementById('items')
+    lock1 = document.getElementById('lock1')
 
     if (itemsForm.children.length > 1) {
         while (itemsForm.children.length > 1) {
             itemsForm.removeChild(itemsForm.lastChild)
             }
         }
-    LockUnlockItem(1)
-    document.getElementById('itemDescription1').placeholder = 'Item Description'
-    document.getElementById('quantity1').placeholder = ''
-    document.getElementById('price1').placeholder = ''
-    document.getElementById('costumerName').placeholder = 'Costumer Name'
+    if (lock1.value == 'locked') {
+        LockUnlockItem(1)
+    }
+    
+    let costumerRegistry = document.getElementById('costumerRegistry')
+    let barcode = document.getElementById('barcode1')
+    let itemDesc = document.getElementById('itemDescription1')
+    let quantity = document.getElementById('quantity1')
+    let price = document.getElementById('price1')
+    let costumerName = document.getElementById('costumerName')
+
+    costumerRegistry.value = ''
+    costumerRegistry.placeholder = 'Costumer Registry'
+
+    costumerName.value = ''
+    costumerName.placeholder = 'Costumer Name'
+
+    barcode.value = ''
+    barcode.placeholder = 'Barcode'
+
+    itemDesc.value = ''
+    itemDesc.placeholder = 'Item Description'
+    
+    quantity.value = ''
+    quantity.placeholder = ''
+
+    price.value = ''
+    price.placeholder = ''
     
     itemCounter = 2
+}
+
+function resetAll() {
+    cleanForm()
+    cleanReceipt()
 }

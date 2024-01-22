@@ -111,7 +111,6 @@ def openReceipt():
     
     if receipt_id: #In case of request already has a receipt_id. Update it changing costumer_registry and costumer_store.
         session_remakeReceipt = Session()
-        print(f"Receipt Exists: {receipt_id}")
         previousReceipt = session_remakeReceipt.query(Receipts).get(receipt_id)
         if previousReceipt: #In case of the receipt_id passed on receiptHeader exists on database to this user with opened status (1)
             try:
@@ -168,41 +167,44 @@ def holdItem():
     quantity = float(item['quantity'])
     price = float(item['price'])
 
-    if item:
+    if receipt_id:
+        if item:
 
-        sessionHoldItem = Session()
+            sessionHoldItem = Session()
 
-        checkItemExists = sessionHoldItem.query(Receipt_Products).filter(Receipt_Products.item_id == barcode, Receipt_Products.receipt_id == receipt_id).first()
-        receiptStatus = sessionHoldItem.query(Receipts).get(receipt_id).receipt_status
-        if receiptStatus == str(1):
-            if checkItemExists:
-                #Update quantity and price on item
+            checkItemExists = sessionHoldItem.query(Receipt_Products).filter(Receipt_Products.item_id == barcode, Receipt_Products.receipt_id == receipt_id).first()
+            receiptStatus = sessionHoldItem.query(Receipts).get(receipt_id).receipt_status
+            if receiptStatus == str(1):
+                if checkItemExists:
+                    #Update quantity and price on item
 
-                updateItem = update(Receipt_Products).where(Receipt_Products.item_id == barcode, Receipt_Products.receipt_id == receipt_id).values(quantity = quantity, unit_price = price, datetime = func.to_date(datetime.now().strftime('%d/%m/%Y %H:%M:%S'), 'DD/MM/YYYY HH24:MI:SS'))
-                sessionHoldItem.execute(updateItem)
-                sessionHoldItem.commit()
-                return jsonify({
-                    'itemUpdated': 'yes'
-                    })
+                    updateItem = update(Receipt_Products).where(Receipt_Products.item_id == barcode, Receipt_Products.receipt_id == receipt_id).values(quantity = quantity, unit_price = price, datetime = func.to_date(datetime.now().strftime('%d/%m/%Y %H:%M:%S'), 'DD/MM/YYYY HH24:MI:SS'))
+                    sessionHoldItem.execute(updateItem)
+                    sessionHoldItem.commit()
+                    return jsonify({
+                        'itemUpdated': 'yes'
+                        })
+                else:
+                    # Declare a new item on Receipt_Products class to input on database
+                    newItem = Receipt_Products(
+                        receipt_id = receipt_id,
+                        datetime = func.to_date(datetime.now().strftime('%d/%m/%Y %H:%M:%S'), 'DD/MM/YYYY HH24:MI:SS'),
+                        item_id = barcode,
+                        quantity = quantity,
+                        unit_price = price
+                        )
+
+                    #Insert new item on database
+                    sessionHoldItem.add(newItem)
+                    sessionHoldItem.commit()
+                    return jsonify({
+                        'itemAdded': 'yes'
+                        })
+
             else:
-                # Declare a new item on Receipt_Products class to input on database
-                newItem = Receipt_Products(
-                    receipt_id = receipt_id,
-                    datetime = func.to_date(datetime.now().strftime('%d/%m/%Y %H:%M:%S'), 'DD/MM/YYYY HH24:MI:SS'),
-                    item_id = barcode,
-                    quantity = quantity,
-                    unit_price = price
-                    )
-
-                #Insert new item on database
-                sessionHoldItem.add(newItem)
-                sessionHoldItem.commit()
-                return jsonify({
-                    'itemAdded': 'yes'
-                    })
-
-        else:
-            abort(500, f'Receipt {receipt_id} is closed. Cannot include items on closed receipt. Please, start a new sale.')
+                abort(500, f'Receipt {receipt_id} is closed. Cannot include items on closed receipt. Please, start a new sale.')
+    else:
+        return abort(400, "There's no receipt opened, please, open a receipt before iniciate sale")
 
 @BP_register_sales.route('/sales/register/removeItem', methods=['Post'])
 def removeItem():
