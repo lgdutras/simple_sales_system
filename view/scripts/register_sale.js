@@ -435,7 +435,6 @@ function registerSale() {
             }
 
             receipt_id = ''
-            let now = new Date()
             cleanForm()
         }
 
