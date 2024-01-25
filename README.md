@@ -8,8 +8,9 @@ Welcome to the Simple Sales System, an ongoing web application project designed 
   - **Frameworks**
     - Flask
     - SQLAlchemy
-    - secrets
-    - bcrypt
+    - Cx_Oracle
+    - secrets (lib)
+    - bcrypt (lib)
 - **Database:** Oracle v7.0.0.1050
 - **Frontend Framework:** Bootstrap 4.0
 
@@ -21,6 +22,7 @@ To get started with the Simple Sales System, follow these steps:
 2. Ensure you have Python 3.10.7 (32-bit) installed.
 3. Set up the Oracle database with version v7.0.0.1050.
 4. Navigate to the project directory and install the necessary dependencies.
+   4.1 To install them, execute pip install -r requirements.txt on root
 
 ## Usage
 
